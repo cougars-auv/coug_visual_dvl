@@ -1,9 +1,9 @@
 # 🌊 CoUGARs Package Template
 
-[![ROS 2 CI](https://github.com/cougars-auv/coug_template/actions/workflows/ros2_ci.yml/badge.svg)](https://github.com/cougars-auv/coug_template/actions/workflows/ros2_ci.yml)
-[![Docker CI](https://github.com/cougars-auv/coug_template/actions/workflows/docker_ci.yml/badge.svg)](https://github.com/cougars-auv/coug_template/actions/workflows/docker_ci.yml)
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/cougars-auv/coug_template/main.svg)](https://results.pre-commit.ci/latest/github/cougars-auv/coug_template/main)
-[![codecov](https://codecov.io/gh/cougars-auv/coug_template/graph/badge.svg?token=92GLUNI35L)](https://codecov.io/gh/cougars-auv/coug_template)
+[![ROS 2 CI](https://github.com/cougars-auv/coug_visual_dvl/actions/workflows/ros2_ci.yml/badge.svg)](https://github.com/cougars-auv/coug_visual_dvl/actions/workflows/ros2_ci.yml)
+[![Docker CI](https://github.com/cougars-auv/coug_visual_dvl/actions/workflows/docker_ci.yml/badge.svg)](https://github.com/cougars-auv/coug_visual_dvl/actions/workflows/docker_ci.yml)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/cougars-auv/coug_visual_dvl/main.svg)](https://results.pre-commit.ci/latest/github/cougars-auv/coug_visual_dvl/main)
+[![codecov](https://codecov.io/gh/cougars-auv/coug_visual_dvl/graph/badge.svg?token=92GLUNI35L)](https://codecov.io/gh/cougars-auv/coug_visual_dvl)
 
 ## 🤝 Contributing
 
