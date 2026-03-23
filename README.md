@@ -58,8 +58,8 @@ In addition to simulation validation, the FROST Lab has collected time-synchroni
 <br>
 
 <p align="center">
-  <img src=".github/assets/iver3_stereo_calib1.png" width="400">
-  <img src=".github/assets/iver3_stereo_calib2.png" width="400">
+  <img src=".github/assets/iver3_stereo_calib1_rotated.png" width="200">
+  <img src=".github/assets/iver3_stereo_calib2_rotated.png" width="200">
 </p>
 
 <p align="center">
@@ -69,10 +69,10 @@ In addition to simulation validation, the FROST Lab has collected time-synchroni
 <br>
 
 <p align="center">
-  <img src=".github/assets/iver3_stereo_image1.png" width="500">
+  <img src=".github/assets/iver3_stereo_image1.png" width="600">
 </p>
 <p align="center">
-  <img src=".github/assets/iver3_stereo_image2.png" width="500">
+  <img src=".github/assets/iver3_stereo_image2.png" width="600">
 </p>
 
 <p align="center">
