@@ -5,6 +5,46 @@
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/cougars-auv/coug_visual_dvl/main.svg)](https://results.pre-commit.ci/latest/github/cougars-auv/coug_visual_dvl/main)
 [![codecov](https://codecov.io/gh/cougars-auv/coug_visual_dvl/graph/badge.svg?token=92GLUNI35L)](https://codecov.io/gh/cougars-auv/coug_visual_dvl)
 
+## 💡 Project Proposal
+
+### Motivation
+
+Doppler Velocity Logs (DVLs) use acoustics to provide high-accuracy linear velocity measurements relative to the seafloor. They are critical to autonomous underwater vehicle (AUV) localization systems, especially during extensive, GPS-denied underwater missions. However, DVLs are susceptible to challenging terrain such as steep dropoffs, acoustic-scattering surfaces, and marine life. When the DVL loses bottom lock and stops publishing reliable data, the localization system often relies purely on dead-reckoning from an Inertial Measurement Unit (IMU), which can quickly lead to rapid unbounded drift in positional accuracy. Developing a robust, vision-based alternative with downward-facing stereo cameras would provide critical linear velocity observability during DVL dropouts, effectively bounding navigation drift.
+
+We acknowledge that the correct approach to this problem is a full visual odometry pipeline that provides the estimator with more information than just linear velocity measurements. However, to limit the project scope and simplify integration into existing software, we’ve opted to strictly estimate 3D linear velocity, treating our computer vision pipeline as a sort of simulated hardware sensor.
+
+### Approach
+
+While our final approach will ultimately be decided by future development and experimentation, we anticipate incorporating a combination of camera calibration, image preprocessing, feature tracking, optical flow, outlier rejection, and stereo depth estimation. This should allow us to track the movement of detected features in the camera images relative to the AUV, estimate their position (and velocity) in 3D space, and reject likely outliers caused by common underwater challenges such as wavelength absorption, caustics, or “marine snow.”
+
+### Simulation Validation
+
+To validate our approach, we plan to use the HoloOcean marine robotics simulator. HoloOcean is built around Unreal Engine 5, a video game engine known for photorealistic visuals. By comparing the BlueROV agent’s actual linear velocity against the predicted linear velocity determined from the simulated stereo images, we should be able to calculate the RMSE between our estimate and ground truth. Using HoloOcean will also allow us to benchmark the real-time performance of the approach online during simulated missions.
+
+add here
+
+*Fig. 1. Front and back HoloOcean stereo camera frames on the BlueROV2.*
+
+add here
+
+*Fig. 2. Example front and back HoloOcean stereo camera images displayed side-by-side.*
+
+### Hawaii Dataset Validation
+
+In addition to simulation validation, the FROST Lab has collected time-synchronized DVL and stereo camera imagery from IVER3 AUV field tests in Hawaii. We plan to use these images to estimate the AUV’s linear velocity and compare them against corresponding DVL measurements to get a RMSE metric using the same approach as in simulation. Comparing the dataset timestamps against the script processing duration will also serve as a real-time performance benchmark.
+
+add here
+
+*Fig. 3. IVER3 AUVs used by the BYU FROST Lab for Hawaii data collection.*
+
+add here
+
+*Fig. 4. Select stereo camera image pair from the calibration dataset.*
+
+add here
+
+*Fig. 5. Select stereo camera images (not matched) from an IVER3 mission in Hawaii.*
+
 ## 🤝 Contributing
 
 - **Create a Branch:** Create a new branch using the format `name/feature` (e.g., `nelson/repo-docs`).
