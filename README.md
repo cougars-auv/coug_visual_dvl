@@ -21,29 +21,63 @@ While our final approach will ultimately be decided by future development and ex
 
 To validate our approach, we plan to use the HoloOcean marine robotics simulator. HoloOcean is built around Unreal Engine 5, a video game engine known for photorealistic visuals. By comparing the BlueROV agent’s actual linear velocity against the predicted linear velocity determined from the simulated stereo images, we should be able to calculate the RMSE between our estimate and ground truth. Using HoloOcean will also allow us to benchmark the real-time performance of the approach online during simulated missions.
 
-add here
+<br>
 
-*Fig. 1. Front and back HoloOcean stereo camera frames on the BlueROV2.*
+<p align="center">
+  <img src=".github/assets/bluerov2_frames.png" width="400">
+</p>
 
-add here
+<p align="center">
+  <em>Fig. 1. Front and back HoloOcean stereo camera frames on the BlueROV2.</em>
+</p>
 
-*Fig. 2. Example front and back HoloOcean stereo camera images displayed side-by-side.*
+<br>
+
+<p align="center">
+  <img src=".github/assets/holoocean_stereo_pair.png" width="600">
+</p>
+
+<p align="center">
+  <em>Fig. 2. Example front and back HoloOcean stereo camera images displayed side-by-side.</em>
+</p>
 
 ### Hawaii Dataset Validation
 
 In addition to simulation validation, the FROST Lab has collected time-synchronized DVL and stereo camera imagery from IVER3 AUV field tests in Hawaii. We plan to use these images to estimate the AUV’s linear velocity and compare them against corresponding DVL measurements to get a RMSE metric using the same approach as in simulation. Comparing the dataset timestamps against the script processing duration will also serve as a real-time performance benchmark.
 
-add here
+<br>
 
-*Fig. 3. IVER3 AUVs used by the BYU FROST Lab for Hawaii data collection.*
+<p align="center">
+  <img src=".github/assets/iver3s.png" width="400">
+</p>
 
-add here
+<p align="center">
+  <em>Fig. 3. IVER3 AUVs used by the BYU FROST Lab for Hawaii data collection.</em>
+</p>
 
-*Fig. 4. Select stereo camera image pair from the calibration dataset.*
+<br>
 
-add here
+<p align="center">
+  <img src=".github/assets/iver3_stereo_calib1.png" width="400">
+  <img src=".github/assets/iver3_stereo_calib2.png" width="400">
+</p>
 
-*Fig. 5. Select stereo camera images (not matched) from an IVER3 mission in Hawaii.*
+<p align="center">
+  <em>Fig. 4. Select stereo camera image pair from the calibration dataset.</em>
+</p>
+
+<br>
+
+<p align="center">
+  <img src=".github/assets/iver3_stereo_image1.png" width="500">
+</p>
+<p align="center">
+  <img src=".github/assets/iver3_stereo_image2.png" width="500">
+</p>
+
+<p align="center">
+  <em>Fig. 5. Select stereo camera images (not matched) from an IVER3 mission in Hawaii.</em>
+</p>
 
 ## 🤝 Contributing
 
