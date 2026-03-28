@@ -42,7 +42,7 @@ BUCKET_NS = 100_000_000  # 100 ms in nanoseconds
 NS_RE = re.compile(r"_(\d+)_raw\.bmp$")
 
 
-def load_bayer_bmp(filepath):
+def load_bayer_bmp(filepath: str) -> np.ndarray:
     with open(filepath, "rb") as f:
         f.seek(10)
         start = struct.unpack("<I", f.read(4))[0]

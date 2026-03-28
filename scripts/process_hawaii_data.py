@@ -36,7 +36,7 @@ CALIB_FILE = BASE_DIR / "scripts" / "stereo_calibration_params.json"
 STEREO_PAIRS = BASE_DIR / "scripts" / "stereo_pairs.json"
 
 
-def load_bayer_bmp(filepath):
+def load_bayer_bmp(filepath: str) -> np.ndarray:
     with open(filepath, "rb") as f:
         f.seek(10)
         start = struct.unpack("<I", f.read(4))[0]
@@ -57,7 +57,7 @@ def load_bayer_bmp(filepath):
     return cv2.normalize(gray, None, 0, 255, cv2.NORM_MINMAX)
 
 
-def main():
+def main() -> None:
     with open(CALIB_FILE, "r") as f:
         calib_dict = json.load(f)
 

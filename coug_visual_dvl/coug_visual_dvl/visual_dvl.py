@@ -24,7 +24,7 @@ class VisualDVL:
     :date: Mar 2026
     """
 
-    def __init__(self, calib_dict: dict, img_size: tuple):
+    def __init__(self, calib_dict: dict, img_size: tuple) -> None:
         """
         Initializes stereo rectification and undistortion maps.
 

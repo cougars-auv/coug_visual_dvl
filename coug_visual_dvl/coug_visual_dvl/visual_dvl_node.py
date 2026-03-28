@@ -34,7 +34,7 @@ class VisualDvlNode(Node):
     :date: Mar 2026
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__("visual_dvl_node")
 
         self.declare_parameter("front_stereo_topic", "stereo/front/image_raw")
@@ -120,7 +120,7 @@ class VisualDvlNode(Node):
         back_msg: Image,
         front_info: CameraInfo,
         back_info: CameraInfo,
-    ):
+    ) -> None:
         """
         Synchronize and process stereo images to estimate velocity.
 
@@ -200,7 +200,7 @@ class VisualDvlNode(Node):
         self.pub.publish(twist_msg)
 
 
-def main(args=None):
+def main(args: list[str] | None = None) -> None:
     rclpy.init(args=args)
     visual_dvl_node = VisualDvlNode()
     try:
