@@ -16,7 +16,8 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import qos_profile_system_default
 from sensor_msgs.msg import Image, CameraInfo
-from geometry_msgs.msg import TwistStamped
+from geometry_msgs.msg import TwistStamped, Vector3Stamped
+import tf2_geometry_msgs
 import numpy as np
 from scipy.spatial.transform import Rotation
 import message_filters
@@ -106,6 +107,7 @@ class VisualDvlNode(Node):
         self.ts.registerCallback(self.stereo_callback)
 
         self.visual_dvl = None
+        self.vel_T_front = None
         self.last_time = None
         self.bridge = CvBridge()
 
@@ -136,10 +138,12 @@ class VisualDvlNode(Node):
             self.get_logger().error(f"Failed to convert images: {e}")
             return
 
+        curr_time = rclpy.time.Time.from_msg(front_msg.header.stamp)
+
         if self.visual_dvl is None:
             try:
                 back_T_front_tf = self.tf_buffer.lookup_transform(
-                    self.front_stereo_frame, self.back_stereo_frame, rclpy.time.Time()
+                    self.back_stereo_frame, self.front_stereo_frame, rclpy.time.Time()
                 )
                 q = back_T_front_tf.transform.rotation
                 back_R_front = (
@@ -167,33 +171,41 @@ class VisualDvlNode(Node):
                 with open("/tmp/online_stereo_calibration_params.json", "w") as f:
                     json.dump(calib_dict, f, indent=2)
 
+                self.vel_T_front = self.tf_buffer.lookup_transform(
+                    self.vel_frame, self.front_stereo_frame, rclpy.time.Time()
+                )
                 self.visual_dvl = VisualDVL(
                     calib_dict, (front_info.width, front_info.height)
                 )
-                self.last_time = rclpy.time.Time.from_msg(front_msg.header.stamp)
+                self.last_time = curr_time
             except Exception as e:
                 self.get_logger().info(
-                    f"Failed to lookup {self.front_stereo_frame} to {self.back_stereo_frame} transform: {e}"
+                    f"Failed to lookup {self.back_stereo_frame} to {self.front_stereo_frame} transform: {e}"
                 )
                 return
+            return
 
-        curr_time = rclpy.time.Time.from_msg(front_msg.header.stamp)
-        dt = 0.0
-        if self.last_time is not None:
-            dt = (curr_time - self.last_time).nanoseconds * 1e-9
+        dt = (curr_time - self.last_time).nanoseconds * 1e-9
         self.last_time = curr_time
 
         velocities = self.visual_dvl.estimate_velocity(cv_front, cv_back, dt)
-        vx, vy, vz = velocities[0], velocities[1], velocities[2]
 
-        # TODO: Rotate into vel_frame (DVL frame)
+        # Rotate the velocity into the DVL frame
+        v_front = self.visual_dvl.R1.T @ velocities
+
+        vel_vec = Vector3Stamped()
+        vel_vec.header.frame_id = self.front_stereo_frame
+        vel_vec.vector.x = v_front[0]
+        vel_vec.vector.y = v_front[1]
+        vel_vec.vector.z = v_front[2]
+        vel_rotated = tf2_geometry_msgs.do_transform_vector3(vel_vec, self.vel_T_front)
 
         twist_msg = TwistStamped()
         twist_msg.header.stamp = front_msg.header.stamp
         twist_msg.header.frame_id = self.vel_frame
-        twist_msg.twist.linear.x = vx
-        twist_msg.twist.linear.y = vy
-        twist_msg.twist.linear.z = vz
+        twist_msg.twist.linear.x = vel_rotated.vector.x
+        twist_msg.twist.linear.y = vel_rotated.vector.y
+        twist_msg.twist.linear.z = vel_rotated.vector.z
 
         # TODO: Add estimated covariance
 
