@@ -47,7 +47,7 @@ MISSION_BACK_DIR = MISSION_DIR / "DEV_000F314F3269"
 MISSION_PAIRS_OUTPUT = BASE_DIR / "scripts" / "mission_stereo_pairs.json"
 
 BOARD_SIZE = (9, 6)
-SQUARE_SIZE = 0.05  
+SQUARE_SIZE = 0.05
 BUCKET_NS = 100_000_000  # 100 ms in nanoseconds
 NS_RE = re.compile(r"_(\d+)_raw\.bmp$")
 
