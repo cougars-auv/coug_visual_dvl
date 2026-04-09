@@ -30,11 +30,21 @@ BASE_DIR = (
     / "coug_visual_dvl"
 )
 
-FRONT_DIR = BASE_DIR / "hawaii_data" / "20240418_calibration_imgs" / "DEV_000F314F3266"
-BACK_DIR = BASE_DIR / "hawaii_data" / "20240418_calibration_imgs" / "DEV_000F314F3269"
-ALL_PAIRS_OUTPUT = BASE_DIR / "scripts" / "stereo_pairs.json"
+CALIBRATION_DIR = BASE_DIR / "hawaii_data" / "20240418_calibration_imgs"
+CALIBRATION_FRONT_DIR = CALIBRATION_DIR / "DEV_000F314F3266"
+CALIBRATION_BACK_DIR = CALIBRATION_DIR / "DEV_000F314F3269"
+ALL_PAIRS_OUTPUT = BASE_DIR / "scripts" / "all_stereo_pairs.json"
 GOOD_PAIRS_OUTPUT = BASE_DIR / "scripts" / "good_stereo_pairs.json"
 VERIFIED_PAIRS_OUTPUT = BASE_DIR / "scripts" / "verified_stereo_pairs.json"
+
+MISSION_DIR = (
+    BASE_DIR
+    / "hawaii_data"
+    / "20240418-130518--2024-04-18_oahu_zblocks_4mHFB-IVER3-3100"
+)
+MISSION_FRONT_DIR = MISSION_DIR / "DEV_000F314F3266"
+MISSION_BACK_DIR = MISSION_DIR / "DEV_000F314F3269"
+MISSION_PAIRS_OUTPUT = BASE_DIR / "scripts" / "mission_stereo_pairs.json"
 
 BOARD_SIZE = (9, 6)
 SQUARE_SIZE = 0.025  # TODO: Figure this out actually
@@ -77,8 +87,8 @@ def index_by_bucket(directory: Path) -> dict[int, Path]:
 # %%
 print("Matching stereo pairs by timestamp...")
 
-front_map = index_by_bucket(FRONT_DIR)
-back_map = index_by_bucket(BACK_DIR)
+front_map = index_by_bucket(CALIBRATION_FRONT_DIR)
+back_map = index_by_bucket(CALIBRATION_BACK_DIR)
 
 common_buckets = sorted(set(front_map) & set(back_map))
 
@@ -91,7 +101,23 @@ all_pairs = [
 ]
 
 ALL_PAIRS_OUTPUT.write_text(json.dumps(all_pairs, indent=2))
-print(f"Matched stereo pairs: {len(all_pairs)}\n")
+print(f"Matched stereo pairs: {len(all_pairs)}")
+
+mission_front_map = index_by_bucket(MISSION_FRONT_DIR)
+mission_back_map = index_by_bucket(MISSION_BACK_DIR)
+
+mission_common_buckets = sorted(set(mission_front_map) & set(mission_back_map))
+
+mission_pairs = [
+    {
+        "front": str(mission_front_map[b].relative_to(BASE_DIR)),
+        "back": str(mission_back_map[b].relative_to(BASE_DIR)),
+    }
+    for b in mission_common_buckets
+]
+
+MISSION_PAIRS_OUTPUT.write_text(json.dumps(mission_pairs, indent=2))
+print(f"Matched mission stereo pairs: {len(mission_pairs)}\n")
 
 # %%
 print("Detecting chessboard corners to find good stereo pairs...")

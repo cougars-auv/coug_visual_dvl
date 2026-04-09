@@ -33,7 +33,7 @@ BASE_DIR = (
     / "coug_visual_dvl"
 )
 CALIB_FILE = BASE_DIR / "scripts" / "stereo_calibration_params.json"
-STEREO_PAIRS = BASE_DIR / "scripts" / "stereo_pairs.json"
+STEREO_PAIRS = BASE_DIR / "scripts" / "mission_stereo_pairs.json"
 
 
 def load_bayer_bmp(filepath: str) -> np.ndarray:
