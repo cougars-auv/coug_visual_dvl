@@ -1,0 +1,7 @@
+__pycache__
+.venv
+.vscode
+.DS_Store
+
+hawaii_data/*
+!hawaii_data/.gitkeep
