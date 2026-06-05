@@ -66,7 +66,7 @@ jobs:
           lcov --remove coverage.info '/usr/*' '/opt/*' '*/test/*' '*/tests/*' '*/install/*' '*/build/*' --output-file coverage.info --ignore-errors mismatch,gcov,unused,empty
           sed -i "s|${{ github.workspace }}/.work/target_ws/src/${{ github.event.repository.name }}|${{ github.workspace }}|g" coverage.info
       - if: matrix.runner == 'ubuntu-24.04'
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           files: coverage.info
           token: ${{ secrets.CODECOV_TOKEN }}
