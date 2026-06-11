@@ -136,8 +136,8 @@ class VisualDVL:
             pts_4d = cv2.triangulatePoints(
                 self.P1,  # Front projection matrix
                 self.P2,  # Back projection matrix
-                curr_pts[stereo_valid].reshape(2, -1),  # 2D points in front image
-                pts_back[stereo_valid].reshape(2, -1),  # 2D points in back image
+                curr_pts[stereo_valid].reshape(-1, 2).T,  # 2xN points in front image
+                pts_back[stereo_valid].reshape(-1, 2).T,  # 2xN points in back image
             )
             pts_3d_all = (pts_4d[:3] / pts_4d[3]).T
 
