@@ -28,7 +28,7 @@ def visualization_setup(context, *args, **kwargs) -> list:
 
     pkg_share = get_package_share_directory("coug_visual_dvl")
 
-    template_path = os.path.join(pkg_share, "plotjuggler", "plotjuggler.xml.template")
+    template_path = os.path.join(pkg_share, "config", "plotjuggler.xml.template")
     with open(template_path, "r") as f:
         template_content = f.read()
 
