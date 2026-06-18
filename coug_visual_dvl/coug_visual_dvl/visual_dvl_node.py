@@ -14,7 +14,7 @@
 
 import rclpy
 from rclpy.node import Node
-from rclpy.qos import qos_profile_system_default
+from rclpy.qos import qos_profile_sensor_data, qos_profile_system_default
 from sensor_msgs.msg import Image, CameraInfo
 from geometry_msgs.msg import (
     TwistWithCovarianceStamped,
@@ -95,16 +95,16 @@ class VisualDvlNode(Node):
         self.tf_listener = TransformListener(self.tf_buffer, self)
 
         self.front_sub = message_filters.Subscriber(
-            self, Image, front_topic, qos_profile=qos_profile_system_default
+            self, Image, front_topic, qos_profile=qos_profile_sensor_data
         )
         self.back_sub = message_filters.Subscriber(
-            self, Image, back_topic, qos_profile=qos_profile_system_default
+            self, Image, back_topic, qos_profile=qos_profile_sensor_data
         )
         self.front_info_sub = message_filters.Subscriber(
-            self, CameraInfo, front_info_topic, qos_profile=qos_profile_system_default
+            self, CameraInfo, front_info_topic, qos_profile=qos_profile_sensor_data
         )
         self.back_info_sub = message_filters.Subscriber(
-            self, CameraInfo, back_info_topic, qos_profile=qos_profile_system_default
+            self, CameraInfo, back_info_topic, qos_profile=qos_profile_sensor_data
         )
 
         self.ts = message_filters.ApproximateTimeSynchronizer(
