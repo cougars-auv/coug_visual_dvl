@@ -186,8 +186,9 @@ class VisualDvlNode(Node):
                 )
                 self.last_time = curr_time
             except Exception as e:
-                self.get_logger().info(
-                    f"Failed to lookup {self.back_stereo_frame} to {self.front_stereo_frame} transform: {e}"
+                self.get_logger().warn(
+                    f"Could not transform {self.back_stereo_frame} to {self.front_stereo_frame}: {e}",
+                    throttle_duration_sec=1.0,
                 )
                 return
             return
