@@ -3,7 +3,7 @@
 <package format="3">
   <name>coug_visual_dvl</name>
   <version>0.0.0</version>
-  <description>Visual odometry for the CougUV</description>
+  <description>CoUGARs visual odometry for velocity estimation.</description>
   <maintainer email="snelsond@byu.edu">snelsondurrant</maintainer>
   <license>Apache-2.0</license>
 

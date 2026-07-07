@@ -21,7 +21,7 @@ setup(
     zip_safe=True,
     maintainer="snelsondurrant",
     maintainer_email="snelsond@byu.edu",
-    description="Visual odometry for the CougUV",
+    description="CoUGARs visual odometry for velocity estimation.",
     license="Apache-2.0",
     extras_require={
         "test": [
