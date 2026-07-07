@@ -119,10 +119,7 @@ class VisualDvlNode(Node):
         self.last_time = None
         self.bridge = CvBridge()
 
-        self.get_logger().info(
-            f"Visual DVL started. Listening on {front_topic} and {back_topic} "
-            f"and publishing on {vel_topic}."
-        )
+        self.get_logger().info("Initialization complete.")
 
     def stereo_callback(
         self,
