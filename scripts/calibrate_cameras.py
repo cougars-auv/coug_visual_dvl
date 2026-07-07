@@ -53,6 +53,12 @@ NS_RE = re.compile(r"_(\d+)_raw\.bmp$")
 
 
 def load_bayer_bmp(filepath: str) -> np.ndarray:
+    """
+    Load a Bayer-encoded BMP and return it as an 8-bit grayscale image.
+
+    :param filepath: Path to the raw Bayer BMP file.
+    :return: Normalized 8-bit grayscale image as a numpy array.
+    """
     with open(filepath, "rb") as f:
         f.seek(10)
         start = struct.unpack("<I", f.read(4))[0]
@@ -74,6 +80,12 @@ def load_bayer_bmp(filepath: str) -> np.ndarray:
 
 
 def index_by_bucket(directory: Path) -> dict[int, Path]:
+    """
+    Index BMP frames by their 100 ms timestamp bucket.
+
+    :param directory: Directory of raw BMP frames to index.
+    :return: Mapping of timestamp bucket to the frame path in that bucket.
+    """
     mapping: dict[int, Path] = {}
     for f in sorted(directory.glob("*.bmp")):
         m = NS_RE.search(f.name)

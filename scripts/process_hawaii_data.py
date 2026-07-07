@@ -37,6 +37,12 @@ STEREO_PAIRS = BASE_DIR / "scripts" / "mission_stereo_pairs.json"
 
 
 def load_bayer_bmp(filepath: str) -> np.ndarray:
+    """
+    Load a Bayer-encoded BMP and return it as an 8-bit grayscale image.
+
+    :param filepath: Path to the raw Bayer BMP file.
+    :return: Normalized 8-bit grayscale image as a numpy array.
+    """
     with open(filepath, "rb") as f:
         f.seek(10)
         start = struct.unpack("<I", f.read(4))[0]

@@ -25,6 +25,12 @@ class VisualDVL:
     """
 
     def __init__(self, calib_dict: dict, img_size: tuple) -> None:
+        """
+        Precompute the stereo rectification maps from the calibration.
+
+        :param calib_dict: Stereo calibration with camera matrices, distortion, R, and T.
+        :param img_size: Image size as (width, height) in pixels.
+        """
         self.R1, self.R2, self.P1, self.P2, self.Q, _, _ = cv2.stereoRectify(
             np.array(calib_dict["mtx_f"]),
             np.array(calib_dict["dist_f"]),
