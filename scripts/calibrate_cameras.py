@@ -52,7 +52,7 @@ BUCKET_NS = 100_000_000  # 100 ms in nanoseconds
 NS_RE = re.compile(r"_(\d+)_raw\.bmp$")
 
 
-def load_bayer_bmp(filepath: str) -> np.ndarray:
+def _load_bayer_bmp(filepath: str) -> np.ndarray:
     """
     Load a Bayer-encoded BMP and return it as an 8-bit grayscale image.
 
@@ -79,7 +79,7 @@ def load_bayer_bmp(filepath: str) -> np.ndarray:
     return cv2.normalize(gray, None, 0, 255, cv2.NORM_MINMAX)
 
 
-def index_by_bucket(directory: Path) -> dict[int, Path]:
+def _index_by_bucket(directory: Path) -> dict[int, Path]:
     """
     Index BMP frames by their 100 ms timestamp bucket.
 
@@ -99,8 +99,8 @@ def index_by_bucket(directory: Path) -> dict[int, Path]:
 # %%
 print("Matching stereo pairs by timestamp...")
 
-front_map = index_by_bucket(CALIBRATION_FRONT_DIR)
-back_map = index_by_bucket(CALIBRATION_BACK_DIR)
+front_map = _index_by_bucket(CALIBRATION_FRONT_DIR)
+back_map = _index_by_bucket(CALIBRATION_BACK_DIR)
 
 common_buckets = sorted(set(front_map) & set(back_map))
 
@@ -115,8 +115,8 @@ all_pairs = [
 ALL_PAIRS_OUTPUT.write_text(json.dumps(all_pairs, indent=2))
 print(f"Matched stereo pairs: {len(all_pairs)}")
 
-mission_front_map = index_by_bucket(MISSION_FRONT_DIR)
-mission_back_map = index_by_bucket(MISSION_BACK_DIR)
+mission_front_map = _index_by_bucket(MISSION_FRONT_DIR)
+mission_back_map = _index_by_bucket(MISSION_BACK_DIR)
 
 mission_common_buckets = sorted(set(mission_front_map) & set(mission_back_map))
 
@@ -146,8 +146,8 @@ else:
         front_path = BASE_DIR / pair["front"]
         back_path = BASE_DIR / pair["back"]
 
-        img_f = clahe.apply(load_bayer_bmp(str(front_path)))
-        img_b = clahe.apply(load_bayer_bmp(str(back_path)))
+        img_f = clahe.apply(_load_bayer_bmp(str(front_path)))
+        img_b = clahe.apply(_load_bayer_bmp(str(back_path)))
 
         found_f, corners_f = cv2.findChessboardCornersSB(img_f, BOARD_SIZE, None)
         found_b, corners_b = cv2.findChessboardCornersSB(img_b, BOARD_SIZE, None)
@@ -182,8 +182,8 @@ for i, pair in enumerate(loaded_good_pairs):
     front_path = BASE_DIR / pair["front"]
     back_path = BASE_DIR / pair["back"]
 
-    img_f = clahe.apply(load_bayer_bmp(str(front_path)))
-    img_b = clahe.apply(load_bayer_bmp(str(back_path)))
+    img_f = clahe.apply(_load_bayer_bmp(str(front_path)))
+    img_b = clahe.apply(_load_bayer_bmp(str(back_path)))
 
     corners_f = np.array(pair["corners_f"], dtype=np.float32)
     corners_b = np.array(pair["corners_b"], dtype=np.float32)
@@ -247,7 +247,7 @@ objpoints = [objp] * len(pairs)
 imgpoints_f = [np.float32(p["corners_f"]) for p in pairs]
 imgpoints_b = [np.float32(p["corners_b"]) for p in pairs]
 
-img_size = load_bayer_bmp(str(BASE_DIR / pairs[0]["front"])).shape[::-1]
+img_size = _load_bayer_bmp(str(BASE_DIR / pairs[0]["front"])).shape[::-1]
 
 ret_f, mtx_f, dist_f, *_ = cv2.calibrateCamera(
     objpoints, imgpoints_f, img_size, None, None

@@ -36,7 +36,7 @@ CALIB_FILE = BASE_DIR / "scripts" / "stereo_calibration_params.json"
 STEREO_PAIRS = BASE_DIR / "scripts" / "mission_stereo_pairs.json"
 
 
-def load_bayer_bmp(filepath: str) -> np.ndarray:
+def _load_bayer_bmp(filepath: str) -> np.ndarray:
     """
     Load a Bayer-encoded BMP and return it as an 8-bit grayscale image.
 
@@ -86,8 +86,8 @@ def main() -> None:
         dt = curr_time - prev_time if prev_time is not None else 0.0
         prev_time = curr_time
 
-        img_f = load_bayer_bmp(str(front_path))
-        img_b = load_bayer_bmp(str(back_path))
+        img_f = _load_bayer_bmp(str(front_path))
+        img_b = _load_bayer_bmp(str(back_path))
 
         if estimator is None:
             estimator = VisualDVL(calib_dict, img_f.shape[::-1])
