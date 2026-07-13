@@ -36,7 +36,7 @@ class VisualDvlNode(Node):
     ROS 2 wrapper for the visual odometry script, handles stereo synchronization and TFs.
 
     :author: Nelson Durrant & Braden Meyers
-    :date: May 2026
+    :date: April 2026
     """
 
     def __init__(self) -> None:

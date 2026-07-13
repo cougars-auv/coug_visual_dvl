@@ -21,7 +21,7 @@ class VisualDVL:
     Core computer vision logic for AUV visual odometry using stereo cameras.
 
     :author: Nelson Durrant & Braden Meyers
-    :date: May 2026
+    :date: April 2026
     """
 
     def __init__(self, calib_dict: dict, img_size: tuple) -> None:
