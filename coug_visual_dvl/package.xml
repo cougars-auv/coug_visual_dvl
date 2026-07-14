@@ -11,6 +11,7 @@
   <depend>geometry_msgs</depend>
   <depend>message_filters</depend>
   <depend>python3-numpy</depend>
+  <depend>python3-opencv</depend>
   <depend>python3-scipy</depend>
   <depend>rclpy</depend>
   <depend>sensor_msgs</depend>
