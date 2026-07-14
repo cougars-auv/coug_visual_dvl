@@ -23,6 +23,7 @@ setup(
     maintainer_email="snelsond@byu.edu",
     description="CoUGARs visual odometry for velocity estimation.",
     license="Apache-2.0",
+    url="https://github.com/cougars-auv/coug_visual_dvl",
     extras_require={
         "test": [
             "pytest",
