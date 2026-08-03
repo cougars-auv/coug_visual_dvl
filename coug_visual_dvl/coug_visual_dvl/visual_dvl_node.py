@@ -42,16 +42,21 @@ class VisualDvlNode(Node):
     def __init__(self) -> None:
         super().__init__("visual_dvl_node")
 
+        self.declare_parameter("velocity_noise_sigmas", [0.5, 0.5, 2.0])
         self.declare_parameter("front_stereo_topic", "stereo/front/image_raw")
         self.declare_parameter("back_stereo_topic", "stereo/back/image_raw")
         self.declare_parameter("front_stereo_info_topic", "stereo/front/camera_info")
         self.declare_parameter("back_stereo_info_topic", "stereo/back/camera_info")
         self.declare_parameter("vel_topic", "dvl/twist")
-        self.declare_parameter("velocity_noise_sigmas", [0.5, 0.5, 2.0])
         self.declare_parameter("vel_frame", "dvl_link")
         self.declare_parameter("front_stereo_frame", "front_stereo_link")
         self.declare_parameter("back_stereo_frame", "back_stereo_link")
 
+        sigmas = (
+            self.get_parameter("velocity_noise_sigmas")
+            .get_parameter_value()
+            .double_array_value
+        )
         front_topic = (
             self.get_parameter("front_stereo_topic").get_parameter_value().string_value
         )
@@ -69,11 +74,6 @@ class VisualDvlNode(Node):
             .string_value
         )
         vel_topic = self.get_parameter("vel_topic").get_parameter_value().string_value
-        sigmas = (
-            self.get_parameter("velocity_noise_sigmas")
-            .get_parameter_value()
-            .double_array_value
-        )
         self.covariance = [0.0] * 36
         for i, s in enumerate(sigmas[:3]):
             self.covariance[i * 7] = s * s
