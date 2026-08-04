@@ -13,14 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-import sys
 import json
+import os
 import re
+import struct
+import sys
+from pathlib import Path
+
 import cv2
 import numpy as np
-import struct
-from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "coug_visual_dvl"))
 from coug_visual_dvl.visual_dvl import VisualDVL

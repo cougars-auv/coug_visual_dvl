@@ -14,13 +14,14 @@
 # limitations under the License.
 
 # %%
-import os
 import json
+import os
 import re
-import cv2
-import numpy as np
 import struct
 from pathlib import Path
+
+import cv2
+import numpy as np
 
 BASE_DIR = (
     Path(os.environ.get("HOME", os.path.expanduser("~")))
