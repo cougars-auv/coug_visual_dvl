@@ -35,16 +35,18 @@ def visualization_setup(context, *args, **kwargs) -> list:
 
     config_content = template_content.replace("AUV_NS", auv_ns_str)
 
-    temp_config = tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".xml")
-    temp_config.write(config_content)
-    temp_config.close()
+    with tempfile.NamedTemporaryFile(
+        mode="w", delete=False, suffix=".xml"
+    ) as temp_config:
+        temp_config.write(config_content)
+        temp_config_path = temp_config.name
 
     return [
         Node(
             package="plotjuggler",
             executable="plotjuggler",
             name="plotjuggler",
-            arguments=["-l", temp_config.name],
+            arguments=["-l", temp_config_path],
             parameters=[{"use_sim_time": use_sim_time}],
         )
     ]

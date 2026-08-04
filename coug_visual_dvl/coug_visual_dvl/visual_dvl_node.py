@@ -141,7 +141,7 @@ class VisualDvlNode(Node):
         try:
             cv_front = self.bridge.imgmsg_to_cv2(front_msg, "bgr8")
             cv_back = self.bridge.imgmsg_to_cv2(back_msg, "bgr8")
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.get_logger().error(f"Failed to convert images: {e}")
             return
 
@@ -184,7 +184,7 @@ class VisualDvlNode(Node):
                     calib_dict, (front_info.width, front_info.height)
                 )
                 self.last_time = curr_time
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 self.get_logger().warn(
                     f"Could not transform {self.back_stereo_frame} to {self.front_stereo_frame}: {e}",
                     throttle_duration_sec=1.0,
