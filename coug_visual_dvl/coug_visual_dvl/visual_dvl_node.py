@@ -49,7 +49,7 @@ class VisualDvlNode(Node):
         self.declare_parameter("back_stereo_topic", "stereo/back/image_raw")
         self.declare_parameter("front_stereo_info_topic", "stereo/front/camera_info")
         self.declare_parameter("back_stereo_info_topic", "stereo/back/camera_info")
-        self.declare_parameter("vel_topic", "dvl/twist")
+        self.declare_parameter("vel_topic", "dvl/visual")
         self.declare_parameter("vel_frame", "dvl_link")
         self.declare_parameter("front_stereo_frame", "front_stereo_link")
         self.declare_parameter("back_stereo_frame", "back_stereo_link")
