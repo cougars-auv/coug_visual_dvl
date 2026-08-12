@@ -14,15 +14,18 @@
 
 import os
 import tempfile
+from typing import Any
 
 from ament_index_python.packages import get_package_share_directory
-from launch import LaunchDescription
+from launch import LaunchContext, LaunchDescription
 from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 
-def visualization_setup(context, *args, **kwargs) -> list:
+def visualization_setup(
+    context: LaunchContext, *args: Any, **kwargs: Any
+) -> list[Node]:
 
     use_sim_time = LaunchConfiguration("use_sim_time")
     auv_ns_str = LaunchConfiguration("auv_ns").perform(context)
