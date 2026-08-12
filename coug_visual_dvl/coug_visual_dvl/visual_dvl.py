@@ -15,6 +15,15 @@
 import cv2
 import numpy as np
 
+MAX_CORNERS = 200
+QUALITY_LEVEL = 0.01
+MIN_DISTANCE = 10
+MIN_FEATURE_COUNT = 150
+EPIPOLAR_THRESHOLD_PX = 2.0
+MIN_DEPTH_M = 0.1
+MAX_DEPTH_M = 50.0
+MIN_PTS_FOR_LLS = 3
+
 
 class VisualDVL:
     """
@@ -89,7 +98,10 @@ class VisualDVL:
         if dt <= 0.0 or self.prev_gray_f is None:
             self.prev_gray_f = gray_f
             self.prev_pts_f = cv2.goodFeaturesToTrack(
-                gray_f, maxCorners=200, qualityLevel=0.01, minDistance=10
+                gray_f,
+                maxCorners=MAX_CORNERS,
+                qualityLevel=QUALITY_LEVEL,
+                minDistance=MIN_DISTANCE,
             )
             return np.array([0.0, 0.0, 0.0]), np.empty((0, 3))
 
@@ -109,9 +121,12 @@ class VisualDVL:
 
         # Detect new features when count drops below a threshold
         new_pts = None
-        if curr_pts is None or len(curr_pts) < 150:
+        if curr_pts is None or len(curr_pts) < MIN_FEATURE_COUNT:
             new_pts = cv2.goodFeaturesToTrack(
-                gray_f, maxCorners=200, qualityLevel=0.01, minDistance=10
+                gray_f,
+                maxCorners=MAX_CORNERS,
+                qualityLevel=QUALITY_LEVEL,
+                minDistance=MIN_DISTANCE,
             )
 
         # Check to make sure we tracked or found something
@@ -128,7 +143,9 @@ class VisualDVL:
             pts_back, stereo_status, _ = cv2.calcOpticalFlowPyrLK(
                 gray_f, gray_b, curr_pts, None
             )
-            epipolar_valid = np.abs(curr_pts[:, 0, 0] - pts_back[:, 0, 0]) <= 2.0
+            epipolar_valid = (
+                np.abs(curr_pts[:, 0, 0] - pts_back[:, 0, 0]) <= EPIPOLAR_THRESHOLD_PX
+            )
             stereo_valid = (
                 stereo_status.ravel() == 1
             ) & epipolar_valid  # Discard unlocated features
@@ -149,8 +166,8 @@ class VisualDVL:
 
             # Discard invalid points behind the camera or crazy far away
             depth_valid = (
-                (pts_3d_all[:, 2] > 0.1)
-                & (pts_3d_all[:, 2] < 50.0)
+                (pts_3d_all[:, 2] > MIN_DEPTH_M)
+                & (pts_3d_all[:, 2] < MAX_DEPTH_M)
                 & np.isfinite(pts_3d_all).all(axis=1)
             )
             pts_3d = pts_3d_all[depth_valid]
@@ -158,7 +175,7 @@ class VisualDVL:
             # Solve for camera velocity using LLS
             # du/dt = -(fx/Z)*Vx + (fx*X/Z²)*Vz + (fx*X*Y/Z²)*ωx - fx*(1+X²/Z²)*ωy + (fx*Y/Z)*ωz
             # dv/dt = -(fy/Z)*Vy + (fy*Y/Z²)*Vz + fy*(1+Y²/Z²)*ωx - (fy*X*Y/Z²)*ωy - (fy*X/Z)*ωz
-            if prev_pts is not None and len(pts_3d) >= 3:
+            if prev_pts is not None and len(pts_3d) >= MIN_PTS_FOR_LLS:
                 curr_2d = curr_pts[stereo_valid][depth_valid].reshape(
                     -1, 2
                 )  # Current 2D positions
