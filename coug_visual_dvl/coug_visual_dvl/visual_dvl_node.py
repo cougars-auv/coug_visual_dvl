@@ -45,6 +45,7 @@ class VisualDvlNode(Node):
         super().__init__("visual_dvl_node")
 
         self.declare_parameter("velocity_noise_sigmas", [0.5, 0.5, 2.0])
+        self.declare_parameter("sync_slop_sec", 0.05)
         self.declare_parameter("front_stereo_topic", "stereo/front/image_raw")
         self.declare_parameter("back_stereo_topic", "stereo/back/image_raw")
         self.declare_parameter("front_stereo_info_topic", "stereo/front/camera_info")
@@ -58,6 +59,9 @@ class VisualDvlNode(Node):
             self.get_parameter("velocity_noise_sigmas")
             .get_parameter_value()
             .double_array_value
+        )
+        sync_slop_sec = (
+            self.get_parameter("sync_slop_sec").get_parameter_value().double_value
         )
         front_topic = (
             self.get_parameter("front_stereo_topic").get_parameter_value().string_value
@@ -112,7 +116,7 @@ class VisualDvlNode(Node):
         self.ts = message_filters.ApproximateTimeSynchronizer(
             [self.front_sub, self.back_sub, self.front_info_sub, self.back_info_sub],
             queue_size=10,
-            slop=0.05,
+            slop=sync_slop_sec,
         )
         self.ts.registerCallback(self.stereo_callback)
 
