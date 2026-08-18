@@ -17,13 +17,8 @@ import json
 import message_filters
 import numpy as np
 import rclpy
-import tf2_geometry_msgs
 from cv_bridge import CvBridge
-from geometry_msgs.msg import (
-    TransformStamped,
-    TwistWithCovarianceStamped,
-    Vector3Stamped,
-)
+from geometry_msgs.msg import TransformStamped, TwistWithCovarianceStamped
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data, qos_profile_system_default
 from scipy.spatial.transform import Rotation
@@ -80,9 +75,9 @@ class VisualDvlNode(Node):
             .string_value
         )
         vel_topic = self.get_parameter("vel_topic").get_parameter_value().string_value
+        # Sigmas are in the rectified stereo frame, where z is the optical axis
+        self.rect_covariance = np.diag(np.square(np.asarray(sigmas[:3], dtype=float)))
         self.covariance = [0.0] * 36
-        for i, s in enumerate(sigmas[:3]):
-            self.covariance[i * 7] = s * s
         self.vel_frame = (
             self.get_parameter("vel_frame").get_parameter_value().string_value
         )
@@ -121,7 +116,7 @@ class VisualDvlNode(Node):
         self.ts.registerCallback(self.stereo_callback)
 
         self.visual_dvl = None
-        self.vel_T_front = None
+        self.vel_R_rect = None
         self.last_time = None
         self.bridge = CvBridge()
 
@@ -181,12 +176,23 @@ class VisualDvlNode(Node):
                 with open("/tmp/online_stereo_calibration_params.json", "w") as f:
                     json.dump(calib_dict, f, indent=2)
 
-                self.vel_T_front = self.tf_buffer.lookup_transform(
+                vel_T_front = self.tf_buffer.lookup_transform(
                     self.vel_frame, self.front_stereo_frame, rclpy.time.Time()
                 )
                 self.visual_dvl = VisualDVL(
                     calib_dict, (front_info.width, front_info.height)
                 )
+
+                # Convert rectified stereo -> DVL frame
+                q = vel_T_front.transform.rotation
+                vel_R_front = Rotation.from_quat([q.x, q.y, q.z, q.w]).as_matrix()
+                self.vel_R_rect = vel_R_front @ self.visual_dvl.R1.T
+
+                covariance = self.vel_R_rect @ self.rect_covariance @ self.vel_R_rect.T
+                for i in range(3):
+                    for j in range(3):
+                        self.covariance[i * 6 + j] = float(covariance[i, j])
+
                 self.last_time = curr_time
             except Exception as e:  # noqa: BLE001
                 self.get_logger().warn(
@@ -215,23 +221,15 @@ class VisualDvlNode(Node):
             tfs.append(tf_msg)
         self.feature_tf_pub.sendTransform(tfs)
 
-        # Rotate the rectified front stereo frame velocity into the DVL frame
-        v_front = self.visual_dvl.R1.T @ velocities
-        vel_vec = Vector3Stamped()
-        vel_vec.header.frame_id = self.front_stereo_frame
-        vel_vec.vector.x, vel_vec.vector.y, vel_vec.vector.z = (
-            v_front[0],
-            v_front[1],
-            v_front[2],
-        )
-        vel_rotated = tf2_geometry_msgs.do_transform_vector3(vel_vec, self.vel_T_front)
+        # Convert rectified stereo -> DVL frame
+        velocity = self.vel_R_rect @ velocities
 
         twist_msg = TwistWithCovarianceStamped()
         twist_msg.header.stamp = front_msg.header.stamp
         twist_msg.header.frame_id = self.vel_frame
-        twist_msg.twist.twist.linear.x = vel_rotated.vector.x
-        twist_msg.twist.twist.linear.y = vel_rotated.vector.y
-        twist_msg.twist.twist.linear.z = vel_rotated.vector.z
+        twist_msg.twist.twist.linear.x = velocity[0]
+        twist_msg.twist.twist.linear.y = velocity[1]
+        twist_msg.twist.twist.linear.z = velocity[2]
         twist_msg.twist.covariance = self.covariance
 
         self.pub.publish(twist_msg)
