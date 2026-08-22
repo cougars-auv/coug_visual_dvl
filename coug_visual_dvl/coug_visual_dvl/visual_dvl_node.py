@@ -168,11 +168,11 @@ class VisualDvlNode(Node):
                     calib_dict, (front_info.width, front_info.height)
                 )
 
-                # Convert rectified stereo -> DVL frame
                 q = vel_T_front.transform.rotation
                 vel_R_front = Rotation.from_quat([q.x, q.y, q.z, q.w]).as_matrix()
                 self.vel_R_rect = vel_R_front @ self.visual_dvl.R1.T
 
+                # Conjugate the rectified-frame covariance into the DVL frame
                 covariance = self.vel_R_rect @ self.rect_covariance @ self.vel_R_rect.T
                 for i in range(3):
                     for j in range(3):
@@ -206,7 +206,7 @@ class VisualDvlNode(Node):
             tfs.append(tf_msg)
         self.feature_tf_pub.sendTransform(tfs)
 
-        # Convert rectified stereo -> DVL frame
+        # Transform the velocity into the DVL frame
         velocity = self.vel_R_rect @ velocities
 
         twist_msg = TwistWithCovarianceStamped()
