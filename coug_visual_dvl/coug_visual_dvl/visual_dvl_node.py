@@ -29,13 +29,6 @@ from coug_visual_dvl.visual_dvl import VisualDVL
 
 
 class VisualDvlNode(Node):
-    """
-    ROS 2 wrapper for the visual odometry script, handles stereo synchronization and TFs.
-
-    :author: Nelson Durrant & Braden Meyers
-    :date: April 2026
-    """
-
     def __init__(self) -> None:
         super().__init__("visual_dvl_node")
 
@@ -129,14 +122,6 @@ class VisualDvlNode(Node):
         front_info: CameraInfo,
         back_info: CameraInfo,
     ) -> None:
-        """
-        Synchronize and process stereo images to estimate velocity.
-
-        :param front_msg: Image message from the front camera.
-        :param back_msg: Image message from the back camera.
-        :param front_info: CameraInfo from front camera.
-        :param back_info: CameraInfo from back camera.
-        """
         try:
             cv_front = self.bridge.imgmsg_to_cv2(front_msg, "bgr8")
             cv_back = self.bridge.imgmsg_to_cv2(back_msg, "bgr8")

@@ -26,20 +26,7 @@ MIN_PTS_FOR_LLS = 3
 
 
 class VisualDVL:
-    """
-    Core computer vision logic for AUV visual odometry using stereo cameras.
-
-    :author: Nelson Durrant & Braden Meyers
-    :date: April 2026
-    """
-
     def __init__(self, calib_dict: dict, img_size: tuple) -> None:
-        """
-        Precompute the stereo rectification maps from the calibration.
-
-        :param calib_dict: Stereo calibration with camera matrices, distortion, R, and T.
-        :param img_size: Image size as (width, height) in pixels.
-        """
         self.R1, self.R2, self.P1, self.P2, self.Q, _, _ = cv2.stereoRectify(
             np.array(calib_dict["mtx_f"]),
             np.array(calib_dict["dist_f"]),
@@ -74,14 +61,6 @@ class VisualDVL:
     def estimate_velocity(
         self, cv_f: np.ndarray, cv_b: np.ndarray, dt: float
     ) -> tuple[np.ndarray, np.ndarray]:
-        """
-        Estimates 3D velocity from unrectified stereo images.
-
-        :param cv_f: Unrectified image from the front camera.
-        :param cv_b: Unrectified image from the back camera.
-        :param dt: Time elapsed since the last frame in seconds.
-        :return: Tuple of (velocity [3], pts_3d [N, 3]) in the rectified front camera frame.
-        """
         rect_f = cv2.remap(cv_f, self.map_f1, self.map_f2, cv2.INTER_LINEAR)
         rect_b = cv2.remap(cv_b, self.map_b1, self.map_b2, cv2.INTER_LINEAR)
         gray_f = (
