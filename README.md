@@ -89,7 +89,7 @@ In addition to simulation validation, the FROST Lab has collected time-synchroni
 
 - **Make Changes:** Develop and debug your new feature. Add good documentation.
 
-  > If you need to add dependencies, update the `package.xml`, the Dockerfiles under `.docker/`, `cougars.repos`, or `dependencies.repos` in your branch and test building the image locally.
+  > If you need to add dependencies, update the `package.xml`, the Dockerfiles under `.docker/`, `cougars.repos`, `dev.repos`, or `dependencies.repos` in your branch and test building the image locally.
 
 - **Sync Frequently:** Regularly integrate the latest changes from `main` into your branch (via rebase or merge) to prevent future conflicts.
 
