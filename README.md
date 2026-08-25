@@ -9,7 +9,7 @@
   <img src=".github/assets/rviz.gif" width="600">
 </p>
 
-## 💡 Project Proposal
+## Project Proposal
 
 ### Motivation
 
@@ -83,7 +83,7 @@ In addition to simulation validation, the FROST Lab has collected time-synchroni
   <em>Fig. 5. Select stereo camera images (not matched) from an IVER3 mission in Hawaii.</em>
 </p>
 
-## 🤝 Contributing
+## Contributing
 
 - **Create a Branch:** Create a new branch using the format `name/feature` (e.g., `nelson/repo-docs`).
 
@@ -95,7 +95,7 @@ In addition to simulation validation, the FROST Lab has collected time-synchroni
 
 - **Submit a PR:** Open a pull request, ensure required tests pass, and merge once approved. Upon merge to `main`, GitHub Actions will automatically build and push updated images to Docker Hub with any new dependencies.
 
-## 📦 Releasing
+## Releasing
 
 We adhere to the **Semantic Versioning (SemVer 2.0.0)** standard to release new versions of this repository:
 > Given a version number **`MAJOR.MINOR.PATCH`**, increment the:
@@ -114,7 +114,7 @@ We adhere to the **Semantic Versioning (SemVer 2.0.0)** standard to release new 
 
 - **Publish a GitHub Release:** Review the draft release in GitHub and click **Publish**.
 
-## 📚 Citations
+## Citations
 
 Please cite our relevant publications if you find this repository useful for your research:
 
