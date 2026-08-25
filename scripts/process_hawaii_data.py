@@ -24,7 +24,7 @@ import cv2
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "coug_visual_dvl"))
-from coug_visual_dvl.visual_dvl import VisualDVL
+from coug_visual_dvl.visual_dvl import VisualDvl
 
 BASE_DIR = (
     Path(os.environ.get("HOME", os.path.expanduser("~")))
@@ -81,14 +81,14 @@ def main() -> None:
         dt = curr_time - prev_time if prev_time is not None else 0.0
         prev_time = curr_time
 
-        img_f = _load_bayer_bmp(str(front_path))
-        img_b = _load_bayer_bmp(str(back_path))
+        image_front = _load_bayer_bmp(str(front_path))
+        image_back = _load_bayer_bmp(str(back_path))
 
         if estimator is None:
-            estimator = VisualDVL(calib_dict, img_f.shape[::-1])
+            estimator = VisualDvl(calib_dict, image_front.shape[::-1])
 
-        vel, _ = estimator.estimate_velocity(img_f, img_b, dt)
-        vx, vy, vz = vel[0], vel[1], vel[2]
+        velocity, _ = estimator.estimate_velocity(image_front, image_back, dt)
+        vx, vy, vz = velocity[0], velocity[1], velocity[2]
         print(
             f"Time: {curr_time:.2f} s | dt: {dt:.3f} s | Velocity: [{vx:.3f}, {vy:.3f}, {vz:.3f}] m/s"
         )

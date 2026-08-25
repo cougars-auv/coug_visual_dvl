@@ -25,7 +25,7 @@ from scipy.spatial.transform import Rotation
 from sensor_msgs.msg import CameraInfo, Image
 from tf2_ros import Buffer, TransformBroadcaster, TransformListener
 
-from coug_visual_dvl.visual_dvl import VisualDVL
+from coug_visual_dvl.visual_dvl import VisualDvl
 
 
 class VisualDvlNode(Node):
@@ -81,7 +81,7 @@ class VisualDvlNode(Node):
             self.get_parameter("back_stereo_frame").get_parameter_value().string_value
         )
 
-        self.pub = self.create_publisher(
+        self.vel_pub = self.create_publisher(
             TwistWithCovarianceStamped, vel_topic, qos_profile_system_default
         )
         self.feature_tf_pub = TransformBroadcaster(self)
@@ -101,12 +101,12 @@ class VisualDvlNode(Node):
             self, CameraInfo, back_info_topic, qos_profile=qos_profile_sensor_data
         )
 
-        self.ts = message_filters.ApproximateTimeSynchronizer(
+        self.time_sync = message_filters.ApproximateTimeSynchronizer(
             [self.front_sub, self.back_sub, self.front_info_sub, self.back_info_sub],
             queue_size=10,
             slop=sync_slop_sec,
         )
-        self.ts.registerCallback(self.stereo_callback)
+        self.time_sync.registerCallback(self.stereo_callback)
 
         self.visual_dvl = None
         self.vel_R_rect = None
@@ -164,7 +164,7 @@ class VisualDvlNode(Node):
                 vel_T_front = self.tf_buffer.lookup_transform(
                     self.vel_frame, self.front_stereo_frame, rclpy.time.Time()
                 )
-                self.visual_dvl = VisualDVL(
+                self.visual_dvl = VisualDvl(
                     calib_dict, (front_info.width, front_info.height)
                 )
 
@@ -217,7 +217,7 @@ class VisualDvlNode(Node):
         twist_msg.twist.twist.linear.z = velocity[2]
         twist_msg.twist.covariance = self.covariance
 
-        self.pub.publish(twist_msg)
+        self.vel_pub.publish(twist_msg)
 
 
 def main(args: list[str] | None = None) -> None:

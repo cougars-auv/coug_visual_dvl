@@ -135,16 +135,20 @@ else:
         front_path = BASE_DIR / pair["front"]
         back_path = BASE_DIR / pair["back"]
 
-        img_f = clahe.apply(_load_bayer_bmp(str(front_path)))
-        img_b = clahe.apply(_load_bayer_bmp(str(back_path)))
+        image_front = clahe.apply(_load_bayer_bmp(str(front_path)))
+        image_back = clahe.apply(_load_bayer_bmp(str(back_path)))
 
-        found_f, corners_f = cv2.findChessboardCornersSB(img_f, BOARD_SIZE, None)
-        found_b, corners_b = cv2.findChessboardCornersSB(img_b, BOARD_SIZE, None)
+        found_front, corners_front = cv2.findChessboardCornersSB(
+            image_front, BOARD_SIZE, None
+        )
+        found_back, corners_back = cv2.findChessboardCornersSB(
+            image_back, BOARD_SIZE, None
+        )
 
-        if found_f and found_b:
+        if found_front and found_back:
             pair_data = pair.copy()
-            pair_data["corners_f"] = corners_f.tolist()
-            pair_data["corners_b"] = corners_b.tolist()
+            pair_data["corners_f"] = corners_front.tolist()
+            pair_data["corners_b"] = corners_back.tolist()
             good_pairs.append(pair_data)
 
         if i % 50 == 0 or i == len(all_pairs) - 1:
@@ -171,19 +175,19 @@ for i, pair in enumerate(loaded_good_pairs):
     front_path = BASE_DIR / pair["front"]
     back_path = BASE_DIR / pair["back"]
 
-    img_f = clahe.apply(_load_bayer_bmp(str(front_path)))
-    img_b = clahe.apply(_load_bayer_bmp(str(back_path)))
+    image_front = clahe.apply(_load_bayer_bmp(str(front_path)))
+    image_back = clahe.apply(_load_bayer_bmp(str(back_path)))
 
-    corners_f = np.array(pair["corners_f"], dtype=np.float32)
-    corners_b = np.array(pair["corners_b"], dtype=np.float32)
+    corners_front = np.array(pair["corners_f"], dtype=np.float32)
+    corners_back = np.array(pair["corners_b"], dtype=np.float32)
 
-    disp_f = cv2.cvtColor(img_f, cv2.COLOR_GRAY2BGR)
-    disp_b = cv2.cvtColor(img_b, cv2.COLOR_GRAY2BGR)
+    display_front = cv2.cvtColor(image_front, cv2.COLOR_GRAY2BGR)
+    display_back = cv2.cvtColor(image_back, cv2.COLOR_GRAY2BGR)
 
-    cv2.drawChessboardCorners(disp_f, BOARD_SIZE, corners_f, True)
-    cv2.drawChessboardCorners(disp_b, BOARD_SIZE, corners_b, True)
+    cv2.drawChessboardCorners(display_front, BOARD_SIZE, corners_front, True)
+    cv2.drawChessboardCorners(display_back, BOARD_SIZE, corners_back, True)
 
-    combined_img = np.vstack((disp_f, disp_b))
+    combined_img = np.vstack((display_front, display_back))
     combined_img = cv2.resize(combined_img, (0, 0), fx=0.25, fy=0.25)
 
     overlay_text = (
@@ -227,46 +231,65 @@ print("Using verified stereo pairs to calibrate the cameras...")
 with open(VERIFIED_PAIRS_OUTPUT) as f:
     pairs = json.load(f)
 
-objp = np.zeros((np.prod(BOARD_SIZE), 3), np.float32)
-objp[:, :2] = (
+object_points_template = np.zeros((np.prod(BOARD_SIZE), 3), np.float32)
+object_points_template[:, :2] = (
     np.mgrid[0 : BOARD_SIZE[0], 0 : BOARD_SIZE[1]].T.reshape(-1, 2) * SQUARE_SIZE
 )
 
-objpoints = [objp] * len(pairs)
-imgpoints_f = [np.float32(p["corners_f"]) for p in pairs]
-imgpoints_b = [np.float32(p["corners_b"]) for p in pairs]
+object_points = [object_points_template] * len(pairs)
+image_points_front = [np.float32(p["corners_f"]) for p in pairs]
+image_points_back = [np.float32(p["corners_b"]) for p in pairs]
 
 img_size = _load_bayer_bmp(str(BASE_DIR / pairs[0]["front"])).shape[::-1]
 
-ret_f, mtx_f, dist_f, *_ = cv2.calibrateCamera(
-    objpoints, imgpoints_f, img_size, None, None
+rmse_front, front_camera_matrix, front_dist_coeffs, *_ = cv2.calibrateCamera(
+    object_points, image_points_front, img_size, None, None
 )
-print(f"Front Camera RMSE (pixels): {ret_f:.3f}")
+print(f"Front Camera RMSE (pixels): {rmse_front:.3f}")
 
-ret_b, mtx_b, dist_b, *_ = cv2.calibrateCamera(
-    objpoints, imgpoints_b, img_size, None, None
+rmse_back, back_camera_matrix, back_dist_coeffs, *_ = cv2.calibrateCamera(
+    object_points, image_points_back, img_size, None, None
 )
-print(f"Back Camera RMSE (pixels): {ret_b:.3f}")
+print(f"Back Camera RMSE (pixels): {rmse_back:.3f}")
 
-ret_S, mtx_f, dist_f, mtx_b, dist_b, R, T, E, F = cv2.stereoCalibrate(
-    objpoints,
-    imgpoints_f,
-    imgpoints_b,
-    mtx_f,
-    dist_f,
-    mtx_b,
-    dist_b,
+(
+    rmse_stereo,
+    front_camera_matrix,
+    front_dist_coeffs,
+    back_camera_matrix,
+    back_dist_coeffs,
+    back_R_front,
+    back_t_front,
+    essential_matrix,
+    fundamental_matrix,
+) = cv2.stereoCalibrate(
+    object_points,
+    image_points_front,
+    image_points_back,
+    front_camera_matrix,
+    front_dist_coeffs,
+    back_camera_matrix,
+    back_dist_coeffs,
     img_size,
     criteria=(cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 1e-5),
     flags=cv2.CALIB_FIX_INTRINSIC,
 )
-print(f"Stereo RMSE (pixels): {ret_S:.3f}\n")
+print(f"Stereo RMSE (pixels): {rmse_stereo:.3f}\n")
 
 calib_data = {
     k: v.tolist()
     for k, v in zip(
         ["mtx_f", "dist_f", "mtx_b", "dist_b", "R", "T", "E", "F"],
-        [mtx_f, dist_f, mtx_b, dist_b, R, T, E, F],
+        [
+            front_camera_matrix,
+            front_dist_coeffs,
+            back_camera_matrix,
+            back_dist_coeffs,
+            back_R_front,
+            back_t_front,
+            essential_matrix,
+            fundamental_matrix,
+        ],
     )
 }
 
