@@ -38,7 +38,7 @@ To validate our approach, we plan to use the HoloOcean marine robotics simulator
 <br>
 
 <p align="center">
-  <img src=".github/assets/holoocean_stereo_pair.png" width="600">
+  <img src=".github/assets/holoocean_stereo_pair.png" width="400">
 </p>
 
 <p align="center">
@@ -62,8 +62,8 @@ In addition to simulation validation, the FROST Lab has collected time-synchroni
 <br>
 
 <p align="center">
-  <img src=".github/assets/iver3_stereo_calib1_rotated.png" width="200">
-  <img src=".github/assets/iver3_stereo_calib2_rotated.png" width="200">
+  <img src=".github/assets/iver3_stereo_calib1_rotated.png" width="150">
+  <img src=".github/assets/iver3_stereo_calib2_rotated.png" width="150">
 </p>
 
 <p align="center">
@@ -73,10 +73,10 @@ In addition to simulation validation, the FROST Lab has collected time-synchroni
 <br>
 
 <p align="center">
-  <img src=".github/assets/iver3_stereo_image1.png" width="600">
+  <img src=".github/assets/iver3_stereo_image1.png" width="400">
 </p>
 <p align="center">
-  <img src=".github/assets/iver3_stereo_image2.png" width="600">
+  <img src=".github/assets/iver3_stereo_image2.png" width="400">
 </p>
 
 <p align="center">
