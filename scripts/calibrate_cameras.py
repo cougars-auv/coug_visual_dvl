@@ -76,12 +76,12 @@ def _load_bayer_bmp(filepath: str) -> np.ndarray:
 
 def _index_by_bucket(directory: Path) -> dict[int, Path]:
     mapping: dict[int, Path] = {}
-    for f in sorted(directory.glob("*.bmp")):
-        m = NS_RE.search(f.name)
-        if not m:
+    for image_path in sorted(directory.glob("*.bmp")):
+        match = NS_RE.search(image_path.name)
+        if not match:
             continue
-        bucket = round(int(m.group(1)) / BUCKET_NS)
-        mapping[bucket] = f
+        bucket = round(int(match.group(1)) / BUCKET_NS)
+        mapping[bucket] = image_path
     return mapping
 
 
