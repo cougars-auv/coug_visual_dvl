@@ -68,7 +68,6 @@ class VisualDvlNode(Node):
             .string_value
         )
         vel_topic = self.get_parameter("vel_topic").get_parameter_value().string_value
-        # Sigmas are in the rectified stereo frame, where z is the optical axis
         self.rect_covariance = np.diag(np.square(np.asarray(sigmas[:3], dtype=float)))
         self.covariance = [0.0] * 36
         self.vel_frame = (
