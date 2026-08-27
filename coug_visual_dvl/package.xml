@@ -6,7 +6,6 @@
   <description>Visual odometry for velocity estimation.</description>
   <maintainer email="snelsond@byu.edu">snelsondurrant</maintainer>
   <license>Apache-2.0</license>
-  <url type="repository">https://github.com/cougars-auv/coug_visual_dvl</url>
 
   <depend>cv_bridge</depend>
   <depend>geometry_msgs</depend>
