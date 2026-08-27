@@ -28,7 +28,7 @@ def visualization_setup(
 ) -> list[Node]:
 
     use_sim_time = LaunchConfiguration("use_sim_time")
-    auv_ns_str = LaunchConfiguration("auv_ns").perform(context)
+    agent_ns_str = LaunchConfiguration("agent_ns").perform(context)
 
     pkg_share = get_package_share_directory("coug_visual_dvl")
 
@@ -36,7 +36,7 @@ def visualization_setup(
     with open(template_path, "r") as f:
         template_content = f.read()
 
-    config_content = template_content.replace("AUV_NS", auv_ns_str)
+    config_content = template_content.replace("AGENT_NS", agent_ns_str)
 
     with tempfile.NamedTemporaryFile(
         mode="w", delete=False, suffix=".xml"
@@ -64,9 +64,9 @@ def generate_launch_description() -> LaunchDescription:
                 description="Use simulation/rosbag clock if true",
             ),
             DeclareLaunchArgument(
-                "auv_ns",
+                "agent_ns",
                 default_value="auv0",
-                description="Namespace for the AUV (e.g. auv0)",
+                description="Namespace for the agent (e.g. auv0)",
             ),
             OpaqueFunction(function=visualization_setup),
         ]

@@ -8,24 +8,24 @@
             <plot flip_x="false" mode="TimeSeries" flip_y="false" line_width="1.0">
               <range bottom="-0.194934" left="25.938627" top="0.004754" right="30.957195" />
               <limitY />
-              <curve color="#1f77b4" name="/AUV_NS/dvl/twist/twist/twist/linear/x" />
-              <curve color="#d62728" name="/AUV_NS/dvl/visual/twist/twist/linear/x" />
+              <curve color="#1f77b4" name="/AGENT_NS/dvl/twist/twist/twist/linear/x" />
+              <curve color="#d62728" name="/AGENT_NS/dvl/visual/twist/twist/linear/x" />
             </plot>
           </DockArea>
           <DockArea name="...">
             <plot flip_x="false" mode="TimeSeries" flip_y="false" line_width="1.0">
               <range bottom="-0.124519" left="25.938627" top="0.003037" right="30.957195" />
               <limitY />
-              <curve color="#1f77b4" name="/AUV_NS/dvl/twist/twist/twist/linear/y" />
-              <curve color="#d62728" name="/AUV_NS/dvl/visual/twist/twist/linear/y" />
+              <curve color="#1f77b4" name="/AGENT_NS/dvl/twist/twist/twist/linear/y" />
+              <curve color="#d62728" name="/AGENT_NS/dvl/visual/twist/twist/linear/y" />
             </plot>
           </DockArea>
           <DockArea name="...">
             <plot flip_x="false" mode="TimeSeries" flip_y="false" line_width="1.0">
               <range bottom="-0.022526" left="25.938627" top="0.078166" right="30.957195" />
               <limitY />
-              <curve color="#1f77b4" name="/AUV_NS/dvl/twist/twist/twist/linear/z" />
-              <curve color="#d62728" name="/AUV_NS/dvl/visual/twist/twist/linear/z" />
+              <curve color="#1f77b4" name="/AGENT_NS/dvl/twist/twist/twist/linear/z" />
+              <curve color="#d62728" name="/AGENT_NS/dvl/visual/twist/twist/linear/z" />
             </plot>
           </DockArea>
         </DockSplitter>
@@ -54,7 +54,7 @@
       <boolean_strings_to_number value="true" />
       <remove_suffix_from_strings value="true" />
       <selected_topics
-        value="/AUV_NS/dvl/twist;/AUV_NS/dvl/visual" />
+        value="/AGENT_NS/dvl/twist;/AGENT_NS/dvl/visual" />
     </plugin>
     <plugin ID="UDP Server" />
     <plugin ID="WebSocket Server" />
