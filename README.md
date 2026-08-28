@@ -85,7 +85,7 @@ In addition to simulation validation, the FROST Lab has collected time-synchroni
 
 ## Contributing
 
-We **strongly recommend** using the `cougars-dev` development environment. See the [Contributing](https://github.com/cougars-auv/cougars-dev/blob/main/README.md#contributing) section there.
+We **strongly recommend** using the `cougars-dev` development environment. See the [Contributing](https://github.com/cougars-auv/cougars-dev/blob/main/README.md#contributing) section.
 
 ## Releasing
 
@@ -95,7 +95,7 @@ We adhere to the **Semantic Versioning (SemVer 2.0.0)** standard to release new 
 > - **MINOR** version when you add functionality in a backward compatible manner
 > - **PATCH** version when you make backward compatible bug fixes
 
-- **Tag and Push:** Create and push a version tag (e.g., `v1.2.3`) on your release commit:
+- **Tag and Push:** Create and push a version tag (e.g., `v1.2.3`):
 
   ```bash
   git tag v1.2.3
