@@ -85,7 +85,7 @@ In addition to simulation validation, the FROST Lab has collected time-synchroni
 
 ## Contributing
 
-We **strongly recommend** using the `cougars-dev` development environment. See the [Contributing](https://github.com/cougars-auv/cougars-dev/blob/main/README.md#contributing) section.
+We **strongly recommend** using the [`cougars-dev`](https://github.com/cougars-auv/cougars-dev/tree/main#contributing) development environment.
 
 ## Releasing
 
