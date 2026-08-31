@@ -23,16 +23,11 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "coug_visual_dvl"))
+BASE_DIR = Path(os.environ["OVERLAY_WS"]) / "src" / "coug_visual_dvl"
+
+sys.path.insert(0, str(BASE_DIR / "coug_visual_dvl"))
 from coug_visual_dvl.visual_dvl import VisualDvl
 
-BASE_DIR = (
-    Path(os.environ.get("HOME", os.path.expanduser("~")))
-    / "cougars-dev"
-    / "ros2_ws"
-    / "src"
-    / "coug_visual_dvl"
-)
 CALIB_FILE = BASE_DIR / "scripts" / "stereo_calibration_params.json"
 STEREO_PAIRS = BASE_DIR / "scripts" / "mission_stereo_pairs.json"
 

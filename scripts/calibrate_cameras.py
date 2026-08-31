@@ -23,13 +23,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-BASE_DIR = (
-    Path(os.environ.get("HOME", os.path.expanduser("~")))
-    / "cougars-dev"
-    / "ros2_ws"
-    / "src"
-    / "coug_visual_dvl"
-)
+BASE_DIR = Path(os.environ["OVERLAY_WS"]) / "src" / "coug_visual_dvl"
 
 CALIBRATION_DIR = BASE_DIR / "hawaii_data" / "20240418_calibration_imgs"
 CALIBRATION_FRONT_DIR = CALIBRATION_DIR / "DEV_000F314F3266"
