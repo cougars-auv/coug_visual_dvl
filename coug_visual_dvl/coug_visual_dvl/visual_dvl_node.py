@@ -163,13 +163,13 @@ class VisualDvlNode(Node):
                 vel_T_front = self.tf_buffer.lookup_transform(
                     self.vel_frame, self.front_stereo_frame, rclpy.time.Time()
                 )
-                self.visual_dvl = VisualDvl(
+                visual_dvl = VisualDvl(
                     calib_dict, (front_info.width, front_info.height)
                 )
 
                 q = vel_T_front.transform.rotation
                 vel_R_front = Rotation.from_quat([q.x, q.y, q.z, q.w]).as_matrix()
-                self.vel_R_rect = vel_R_front @ self.visual_dvl.R1.T
+                self.vel_R_rect = vel_R_front @ visual_dvl.R1.T
 
                 # Conjugate the rectified-frame covariance into the DVL frame
                 covariance = self.vel_R_rect @ self.rect_covariance @ self.vel_R_rect.T
@@ -178,6 +178,7 @@ class VisualDvlNode(Node):
                         self.covariance[i * 6 + j] = float(covariance[i, j])
 
                 self.last_time = curr_time
+                self.visual_dvl = visual_dvl
             except Exception as e:  # noqa: BLE001
                 self.get_logger().warn(
                     f"Could not transform {self.back_stereo_frame} to {self.front_stereo_frame}: {e}",
