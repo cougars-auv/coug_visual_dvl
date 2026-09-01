@@ -33,14 +33,14 @@ def generate_launch_description() -> LaunchDescription:
     use_sim_time = LaunchConfiguration("use_sim_time")
     agent_ns = LaunchConfiguration("agent_ns")
 
-    fleet_params = PathJoinSubstitution(
+    fleet_param_file = PathJoinSubstitution(
         [
             EnvironmentVariable("CONFIG_DIR"),
             "fleet",
             "coug_visual_dvl_params.yaml",
         ]
     )
-    agent_params = PathJoinSubstitution(
+    agent_param_file = PathJoinSubstitution(
         [
             EnvironmentVariable("CONFIG_DIR"),
             PythonExpression(["'", agent_ns, "' + '_params.yaml'"]),
@@ -68,8 +68,8 @@ def generate_launch_description() -> LaunchDescription:
                 executable="visual_dvl",
                 name="visual_dvl_node",
                 parameters=[
-                    fleet_params,
-                    agent_params,
+                    fleet_param_file,
+                    agent_param_file,
                     {
                         "use_sim_time": use_sim_time,
                         "vel_frame": dvl_link_frame,
