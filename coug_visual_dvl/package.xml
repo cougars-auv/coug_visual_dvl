@@ -7,6 +7,9 @@
   <maintainer email="snelsond@byu.edu">snelsondurrant</maintainer>
   <license>Apache-2.0</license>
 
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+
   <depend>cv_bridge</depend>
   <depend>geometry_msgs</depend>
   <depend>message_filters</depend>
