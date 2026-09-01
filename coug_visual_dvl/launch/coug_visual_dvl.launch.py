@@ -23,6 +23,12 @@ from launch.substitutions import (
 from launch_ros.actions import Node
 
 
+def agent_frame(agent_ns: LaunchConfiguration, frame: str) -> PythonExpression:
+    return PythonExpression(
+        ["'", agent_ns, f"/{frame}' if '", agent_ns, f"' != '' else '{frame}'"]
+    )
+
+
 def generate_launch_description() -> LaunchDescription:
     use_sim_time = LaunchConfiguration("use_sim_time")
     agent_ns = LaunchConfiguration("agent_ns")
@@ -41,35 +47,9 @@ def generate_launch_description() -> LaunchDescription:
         ]
     )
 
-    dvl_link_frame = PythonExpression(
-        [
-            "'",
-            agent_ns,
-            "/dvl_link' if '",
-            agent_ns,
-            "' != '' else 'dvl_link'",
-        ]
-    )
-
-    front_stereo_link_frame = PythonExpression(
-        [
-            "'",
-            agent_ns,
-            "/front_stereo_link' if '",
-            agent_ns,
-            "' != '' else 'front_stereo_link'",
-        ]
-    )
-
-    back_stereo_link_frame = PythonExpression(
-        [
-            "'",
-            agent_ns,
-            "/back_stereo_link' if '",
-            agent_ns,
-            "' != '' else 'back_stereo_link'",
-        ]
-    )
+    dvl_link_frame = agent_frame(agent_ns, "dvl_link")
+    front_stereo_link_frame = agent_frame(agent_ns, "front_stereo_link")
+    back_stereo_link_frame = agent_frame(agent_ns, "back_stereo_link")
 
     return LaunchDescription(
         [
