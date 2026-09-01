@@ -169,7 +169,7 @@ class VisualDvlNode(Node):
 
                 q = vel_T_front.transform.rotation
                 vel_R_front = Rotation.from_quat([q.x, q.y, q.z, q.w]).as_matrix()
-                self.vel_R_rect = vel_R_front @ visual_dvl.R1.T
+                self.vel_R_rect = vel_R_front @ visual_dvl.rect_R_front.T
 
                 # Conjugate the rectified-frame covariance into the DVL frame
                 covariance = self.vel_R_rect @ self.rect_covariance @ self.vel_R_rect.T
@@ -194,7 +194,7 @@ class VisualDvlNode(Node):
 
         tfs = []
         for i, pt_rect in enumerate(pts_3d):
-            pt_front = self.visual_dvl.R1.T @ pt_rect
+            pt_front = self.visual_dvl.rect_R_front.T @ pt_rect
             tf_msg = TransformStamped()
             tf_msg.header.stamp = front_msg.header.stamp
             tf_msg.header.frame_id = self.front_stereo_frame
