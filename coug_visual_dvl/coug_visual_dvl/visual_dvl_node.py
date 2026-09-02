@@ -43,42 +43,18 @@ class VisualDvlNode(Node):
         self.declare_parameter("front_stereo_frame", "front_stereo_link")
         self.declare_parameter("back_stereo_frame", "back_stereo_link")
 
-        sigmas = (
-            self.get_parameter("velocity_noise_sigmas")
-            .get_parameter_value()
-            .double_array_value
-        )
-        sync_slop_sec = (
-            self.get_parameter("sync_slop_sec").get_parameter_value().double_value
-        )
-        front_topic = (
-            self.get_parameter("front_stereo_topic").get_parameter_value().string_value
-        )
-        back_topic = (
-            self.get_parameter("back_stereo_topic").get_parameter_value().string_value
-        )
-        front_info_topic = (
-            self.get_parameter("front_stereo_info_topic")
-            .get_parameter_value()
-            .string_value
-        )
-        back_info_topic = (
-            self.get_parameter("back_stereo_info_topic")
-            .get_parameter_value()
-            .string_value
-        )
-        vel_topic = self.get_parameter("vel_topic").get_parameter_value().string_value
+        sigmas = self.get_parameter("velocity_noise_sigmas").value
+        sync_slop_sec = self.get_parameter("sync_slop_sec").value
+        front_topic = self.get_parameter("front_stereo_topic").value
+        back_topic = self.get_parameter("back_stereo_topic").value
+        front_info_topic = self.get_parameter("front_stereo_info_topic").value
+        back_info_topic = self.get_parameter("back_stereo_info_topic").value
+        vel_topic = self.get_parameter("vel_topic").value
         self.rect_covariance = np.diag(np.square(np.asarray(sigmas[:3], dtype=float)))
         self.covariance = [0.0] * 36
-        self.vel_frame = (
-            self.get_parameter("vel_frame").get_parameter_value().string_value
-        )
-        self.front_stereo_frame = (
-            self.get_parameter("front_stereo_frame").get_parameter_value().string_value
-        )
-        self.back_stereo_frame = (
-            self.get_parameter("back_stereo_frame").get_parameter_value().string_value
-        )
+        self.vel_frame = self.get_parameter("vel_frame").value
+        self.front_stereo_frame = self.get_parameter("front_stereo_frame").value
+        self.back_stereo_frame = self.get_parameter("back_stereo_frame").value
 
         self.vel_pub = self.create_publisher(
             TwistWithCovarianceStamped, vel_topic, qos_profile_system_default
