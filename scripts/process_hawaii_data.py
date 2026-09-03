@@ -54,10 +54,10 @@ def _load_bayer_bmp(filepath: str) -> np.ndarray:
 
 
 def main() -> None:
-    with open(CALIB_FILE, "r") as f:
+    with open(CALIB_FILE) as f:
         calib_dict = json.load(f)
 
-    with open(STEREO_PAIRS, "r") as f:
+    with open(STEREO_PAIRS) as f:
         stereo_pairs = json.load(f)
 
     estimator = None

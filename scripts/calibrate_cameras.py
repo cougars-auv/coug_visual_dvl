@@ -119,7 +119,7 @@ print("Detecting chessboard corners to find good stereo pairs...")
 
 if GOOD_PAIRS_OUTPUT.exists():
     print(f"Found existing {GOOD_PAIRS_OUTPUT.name}. Skipping.\n")
-    with open(GOOD_PAIRS_OUTPUT, "r") as f:
+    with open(GOOD_PAIRS_OUTPUT) as f:
         good_pairs = json.load(f)
 else:
     good_pairs = []
@@ -156,7 +156,7 @@ else:
 # %%
 print("Displaying good stereo pairs for review...")
 
-with open(GOOD_PAIRS_OUTPUT, "r") as f:
+with open(GOOD_PAIRS_OUTPUT) as f:
     loaded_good_pairs = json.load(f)
 
 clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
@@ -284,6 +284,7 @@ calib_data = {
             essential_matrix,
             fundamental_matrix,
         ],
+        strict=True,
     )
 }
 
