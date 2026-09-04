@@ -1,7 +1,7 @@
 # 🌊 CoUGARs Visual DVL
 
-[![ROS 2 Build & Test](https://github.com/cougars-auv/coug_visual_dvl/actions/workflows/ros2_build_and_test.yml/badge.svg)](https://github.com/cougars-auv/coug_visual_dvl/actions/workflows/ros2_build_and_test.yml)
-[![Docker Build](https://github.com/cougars-auv/coug_visual_dvl/actions/workflows/docker_build.yml/badge.svg)](https://github.com/cougars-auv/coug_visual_dvl/actions/workflows/docker_build.yml)
+[![ROS 2 Build & Test](https://github.com/cougars-auv/coug_visual_dvl/actions/workflows/ros2_build_test.yaml/badge.svg)](https://github.com/cougars-auv/coug_visual_dvl/actions/workflows/ros2_build_test.yaml)
+[![Docker Build](https://github.com/cougars-auv/coug_visual_dvl/actions/workflows/docker_build.yaml/badge.svg)](https://github.com/cougars-auv/coug_visual_dvl/actions/workflows/docker_build.yaml)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/cougars-auv/coug_visual_dvl/main.svg)](https://results.pre-commit.ci/latest/github/cougars-auv/coug_visual_dvl/main)
 [![codecov](https://codecov.io/gh/cougars-auv/coug_visual_dvl/graph/badge.svg?token=92GLUNI35L)](https://codecov.io/gh/cougars-auv/coug_visual_dvl)
 
