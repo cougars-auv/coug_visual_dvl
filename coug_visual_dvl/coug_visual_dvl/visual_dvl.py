@@ -28,11 +28,11 @@ MIN_POINTS_FOR_LLS = 3
 class VisualDvl:
     def __init__(self, calib_dict: dict, img_size: tuple) -> None:
         (
-            self.rect_R_front,
-            self.rect_R_back,
-            self.front_projection,
-            self.back_projection,
-            self.disparity_to_depth,
+            self._rect_R_front,
+            self._rect_R_back,
+            self._front_projection,
+            self._back_projection,
+            self._disparity_to_depth,
             _,
             _,
         ) = cv2.stereoRectify(
@@ -46,34 +46,38 @@ class VisualDvl:
             flags=cv2.CALIB_ZERO_DISPARITY,
             alpha=0,
         )
-        self.front_remap_x, self.front_remap_y = cv2.initUndistortRectifyMap(
+        self._front_remap_x, self._front_remap_y = cv2.initUndistortRectifyMap(
             np.array(calib_dict["mtx_f"]),
             np.array(calib_dict["dist_f"]),
-            self.rect_R_front,
-            self.front_projection,
+            self._rect_R_front,
+            self._front_projection,
             img_size,
             cv2.CV_32FC1,
         )
-        self.back_remap_x, self.back_remap_y = cv2.initUndistortRectifyMap(
+        self._back_remap_x, self._back_remap_y = cv2.initUndistortRectifyMap(
             np.array(calib_dict["mtx_b"]),
             np.array(calib_dict["dist_b"]),
-            self.rect_R_back,
-            self.back_projection,
+            self._rect_R_back,
+            self._back_projection,
             img_size,
             cv2.CV_32FC1,
         )
 
-        self.prev_gray_front = None
-        self.prev_points_front = None
+        self._prev_gray_front = None
+        self._prev_points_front = None
+
+    @property
+    def rect_R_front(self) -> np.ndarray:
+        return self._rect_R_front
 
     def estimate_velocity(
         self, image_front: np.ndarray, image_back: np.ndarray, dt: float
     ) -> tuple[np.ndarray, np.ndarray]:
         rect_front = cv2.remap(
-            image_front, self.front_remap_x, self.front_remap_y, cv2.INTER_LINEAR
+            image_front, self._front_remap_x, self._front_remap_y, cv2.INTER_LINEAR
         )
         rect_back = cv2.remap(
-            image_back, self.back_remap_x, self.back_remap_y, cv2.INTER_LINEAR
+            image_back, self._back_remap_x, self._back_remap_y, cv2.INTER_LINEAR
         )
         gray_front = (
             cv2.cvtColor(rect_front, cv2.COLOR_BGR2GRAY)
@@ -86,9 +90,9 @@ class VisualDvl:
             else rect_back
         )
 
-        if dt <= 0.0 or self.prev_gray_front is None:
-            self.prev_gray_front = gray_front
-            self.prev_points_front = cv2.goodFeaturesToTrack(
+        if dt <= 0.0 or self._prev_gray_front is None:
+            self._prev_gray_front = gray_front
+            self._prev_points_front = cv2.goodFeaturesToTrack(
                 gray_front,
                 maxCorners=MAX_CORNERS,
                 qualityLevel=QUALITY_LEVEL,
@@ -98,16 +102,16 @@ class VisualDvl:
 
         # Track features forward across frames using LK optical flow
         curr_points, prev_points = None, None
-        if self.prev_points_front is not None:
+        if self._prev_points_front is not None:
             curr_points, status, _ = cv2.calcOpticalFlowPyrLK(
-                self.prev_gray_front, gray_front, self.prev_points_front, None
+                self._prev_gray_front, gray_front, self._prev_points_front, None
             )
             valid = status.ravel() == 1  # Discard untracked features
             curr_points = (
                 curr_points[valid] if valid.sum() > 0 else None
             )  # Current feature positions
             prev_points = (
-                self.prev_points_front[valid].reshape(-1, 2)
+                self._prev_points_front[valid].reshape(-1, 2)
                 if valid.sum() > 0
                 else None
             )  # Previous feature positions
@@ -124,8 +128,8 @@ class VisualDvl:
 
         # Check to make sure we tracked or found something
         if curr_points is None and new_points is None:
-            self.prev_gray_front = gray_front
-            self.prev_points_front = None
+            self._prev_gray_front = gray_front
+            self._prev_points_front = None
             return np.array([0.0, 0.0, 0.0]), np.empty((0, 3))
         next_points_front = np.concatenate(
             [x for x in [curr_points, new_points] if x is not None]
@@ -147,14 +151,14 @@ class VisualDvl:
             ) & epipolar_valid  # Discard unlocated features
 
             if stereo_valid.sum() < 1:
-                self.prev_gray_front = gray_front
-                self.prev_points_front = next_points_front.reshape(-1, 1, 2)
+                self._prev_gray_front = gray_front
+                self._prev_points_front = next_points_front.reshape(-1, 1, 2)
                 return np.array([0.0, 0.0, 0.0]), np.empty((0, 3))
 
             # Triangulate matched feature pairs into homogeneous 3D coordinates
             points_4d = cv2.triangulatePoints(
-                self.front_projection,  # Front projection matrix
-                self.back_projection,  # Back projection matrix
+                self._front_projection,  # Front projection matrix
+                self._back_projection,  # Back projection matrix
                 curr_points[stereo_valid].reshape(-1, 2).T,  # 2xN points in front image
                 points_back[stereo_valid].reshape(-1, 2).T,  # 2xN points in back image
             )
@@ -180,7 +184,7 @@ class VisualDvl:
                 )  # Previous 2D positions
                 flow = (curr_points_2d - prev_points_2d) / dt
 
-                fx, fy = self.front_projection[0, 0], self.front_projection[1, 1]
+                fx, fy = self._front_projection[0, 0], self._front_projection[1, 1]
                 point_x, point_y, point_z = (
                     points_3d[:, 0],
                     points_3d[:, 1],
@@ -216,7 +220,7 @@ class VisualDvl:
                 )
                 velocity = twist_solution[:3]
 
-        self.prev_gray_front = gray_front
-        self.prev_points_front = next_points_front.reshape(-1, 1, 2)
+        self._prev_gray_front = gray_front
+        self._prev_points_front = next_points_front.reshape(-1, 1, 2)
 
         return velocity, points_3d
