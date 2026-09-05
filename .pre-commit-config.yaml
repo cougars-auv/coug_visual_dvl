@@ -23,6 +23,7 @@ repos:
             (.*/)?package\.xml|
             (.*/)?setup\.py|
             \.github/(dependabot|release)\.yaml|
+            \.hadolint\.yaml|
             \.pre-commit-config\.yaml|
             \.ruff\.toml|
             codecov\.yml
@@ -61,11 +62,15 @@ repos:
       - id: clang-format
         types_or: [c++, c]
 
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.3
+    hooks:
+      - id: codespell
+
   - repo: https://github.com/AleksaC/hadolint-py
     rev: v2.15.1
     hooks:
       - id: hadolint
-        args: ["--ignore=DL3002", "--ignore=DL3008", "--ignore=DL3066"]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v2.3.1
@@ -83,7 +88,6 @@ repos:
     rev: v0.11.0.1-1
     hooks:
       - id: shellcheck
-        args: ["--exclude=SC1090,SC1091"]
 
   - repo: https://github.com/scop/pre-commit-shfmt
     rev: v3.13.1-1
