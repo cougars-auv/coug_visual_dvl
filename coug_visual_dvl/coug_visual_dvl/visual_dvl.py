@@ -28,7 +28,7 @@ MIN_POINTS_FOR_LLS = 3
 class VisualDvl:
     def __init__(self, calib_dict: dict, img_size: tuple) -> None:
         (
-            self._rect_R_front,
+            self.rect_R_front,
             self._rect_R_back,
             self._front_projection,
             self._back_projection,
@@ -49,7 +49,7 @@ class VisualDvl:
         self._front_remap_x, self._front_remap_y = cv2.initUndistortRectifyMap(
             np.array(calib_dict["mtx_f"]),
             np.array(calib_dict["dist_f"]),
-            self._rect_R_front,
+            self.rect_R_front,
             self._front_projection,
             img_size,
             cv2.CV_32FC1,
@@ -68,7 +68,7 @@ class VisualDvl:
 
     @property
     def rect_R_front(self) -> np.ndarray:
-        return self._rect_R_front
+        return self.rect_R_front
 
     def estimate_velocity(
         self, image_front: np.ndarray, image_back: np.ndarray, dt: float
