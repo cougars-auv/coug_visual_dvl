@@ -6,7 +6,7 @@
 [![codecov](https://codecov.io/gh/cougars-auv/coug_visual_dvl/graph/badge.svg?token=92GLUNI35L)](https://codecov.io/gh/cougars-auv/coug_visual_dvl)
 
 <p align="left">
-  <img src=".github/assets/rviz.gif" width="600">
+  <img src=".github/assets/rviz.gif" width="600" alt="RViz demonstration of visual DVL feature tracking">
 </p>
 
 ## Project Proposal
@@ -28,7 +28,7 @@ To validate our approach, we plan to use the HoloOcean marine robotics simulator
 <br>
 
 <p align="center">
-  <img src=".github/assets/bluerov2_frames.png" width="400">
+  <img src=".github/assets/bluerov2_frames.png" width="400" alt="Front and back HoloOcean stereo camera frames on the BlueROV2">
 </p>
 
 <p align="center">
@@ -38,7 +38,7 @@ To validate our approach, we plan to use the HoloOcean marine robotics simulator
 <br>
 
 <p align="center">
-  <img src=".github/assets/holoocean_stereo_pair.png" width="400">
+  <img src=".github/assets/holoocean_stereo_pair.png" width="400" alt="Example front and back HoloOcean stereo camera images displayed side-by-side">
 </p>
 
 <p align="center">
@@ -52,7 +52,7 @@ In addition to simulation validation, the FROST Lab has collected time-synchroni
 <br>
 
 <p align="center">
-  <img src=".github/assets/iver3s.png" width="400">
+  <img src=".github/assets/iver3s.png" width="400" alt="IVER3 AUVs used by the BYU FROST Lab for Hawaii data collection">
 </p>
 
 <p align="center">
@@ -62,8 +62,8 @@ In addition to simulation validation, the FROST Lab has collected time-synchroni
 <br>
 
 <p align="center">
-  <img src=".github/assets/iver3_stereo_calib1_rotated.png" width="150">
-  <img src=".github/assets/iver3_stereo_calib2_rotated.png" width="150">
+  <img src=".github/assets/iver3_stereo_calib1_rotated.png" width="150" alt="Select stereo camera image pair from the calibration dataset">
+  <img src=".github/assets/iver3_stereo_calib2_rotated.png" width="150" alt="Select stereo camera image pair from the calibration dataset">
 </p>
 
 <p align="center">
@@ -73,10 +73,10 @@ In addition to simulation validation, the FROST Lab has collected time-synchroni
 <br>
 
 <p align="center">
-  <img src=".github/assets/iver3_stereo_image1.png" width="400">
+  <img src=".github/assets/iver3_stereo_image1.png" width="400" alt="Select stereo camera images (not matched) from an IVER3 mission in Hawaii">
 </p>
 <p align="center">
-  <img src=".github/assets/iver3_stereo_image2.png" width="400">
+  <img src=".github/assets/iver3_stereo_image2.png" width="400" alt="Select stereo camera images (not matched) from an IVER3 mission in Hawaii">
 </p>
 
 <p align="center">
@@ -91,6 +91,7 @@ We **strongly recommend** using the [`cougars-dev`](https://github.com/cougars-a
 
 This repository follows the **Semantic Versioning (SemVer 2.0.0)** standard:
 > Given a version number **`MAJOR.MINOR.PATCH`**, increment the:
+>
 > - **MAJOR** version when you make incompatible API changes
 > - **MINOR** version when you add functionality in a backward compatible manner
 > - **PATCH** version when you make backward compatible bug fixes
@@ -111,6 +112,7 @@ This repository follows the **Semantic Versioning (SemVer 2.0.0)** standard:
 If you use this repository in your research, please cite the following publications:
 
 ### CoUGARs
+
 ```bibtex
 @misc{durrant2025lowcostmultiagentfleetacoustic,
   title={Low-cost Multi-agent Fleet for Acoustic Cooperative Localization Research},
