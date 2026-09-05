@@ -10,11 +10,26 @@ Checks: >
   performance-*,
   portability-*,
   readability-*,
-  -bugprone-easily-swappable-parameters
+  -bugprone-easily-swappable-parameters,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-non-private-member-variables-in-classes,
+  -cppcoreguidelines-pro-bounds-constant-array-index,
+  -misc-non-private-member-variables-in-classes,
+  -modernize-pass-by-value,
+  -readability-function-cognitive-complexity,
+  -readability-identifier-length,
+  -readability-magic-numbers
+
+HeaderFilterRegex: '.*/src/[^/]+/[^/]+/include/.*'
+
+CheckOptions:
+  misc-include-cleaner.IgnoreHeaders: 'Eigen/.*;math.h'
+
+FormatStyle: file
+
 WarningsAsErrors: >
   bugprone-*,
   clang-analyzer-*,
   concurrency-*,
   performance-*,
   portability-*
-FormatStyle: file
