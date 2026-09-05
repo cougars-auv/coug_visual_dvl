@@ -22,6 +22,7 @@ from pathlib import Path
 
 import cv2
 import numpy as np
+import numpy.typing as npt
 
 BASE_DIR = Path(os.environ["OVERLAY_WS"]) / "src" / "coug_visual_dvl"
 
@@ -47,7 +48,7 @@ BUCKET_NS = 100_000_000  # 100 ms in nanoseconds
 NS_RE = re.compile(r"_(\d+)_raw\.bmp$")
 
 
-def _load_bayer_bmp(filepath: str) -> np.ndarray:
+def _load_bayer_bmp(filepath: str) -> npt.NDArray[np.uint8]:
     with open(filepath, "rb") as f:
         f.seek(10)
         start = struct.unpack("<I", f.read(4))[0]
@@ -65,7 +66,9 @@ def _load_bayer_bmp(filepath: str) -> np.ndarray:
         img >>= 4  # Convert 12-bit to 8-bit
 
     gray = cv2.cvtColor(np.uint8(img), cv2.COLOR_BayerBG2GRAY)
-    return cv2.normalize(gray, None, 0, 255, cv2.NORM_MINMAX)
+    return np.asarray(
+        cv2.normalize(gray, None, 0, 255, cv2.NORM_MINMAX), dtype=np.uint8
+    )
 
 
 def _index_by_bucket(directory: Path) -> dict[int, Path]:

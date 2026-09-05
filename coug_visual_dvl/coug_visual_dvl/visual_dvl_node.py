@@ -16,6 +16,7 @@ import json
 
 import message_filters
 import numpy as np
+import numpy.typing as npt
 import rclpy
 from cv_bridge import CvBridge, CvBridgeError
 from geometry_msgs.msg import TransformStamped, TwistWithCovarianceStamped
@@ -88,9 +89,9 @@ class VisualDvlNode(Node):
         )
         self._time_sync.registerCallback(self._stereo_callback)
 
-        self._visual_dvl = None
-        self._vel_R_rect = None
-        self._last_time = None
+        self._visual_dvl: VisualDvl | None = None
+        self._vel_R_rect: npt.NDArray[np.float64] | None = None
+        self._last_time: rclpy.time.Time | None = None
         self._bridge = CvBridge()
 
         self.get_logger().info("Initialization complete.")
@@ -111,7 +112,11 @@ class VisualDvlNode(Node):
 
         curr_time = rclpy.time.Time.from_msg(front_msg.header.stamp)
 
-        if self._visual_dvl is None:
+        if (
+            self._visual_dvl is None
+            or self._last_time is None
+            or self._vel_R_rect is None
+        ):
             try:
                 back_T_front_tf = self._tf_buffer.lookup_transform(
                     self._back_stereo_frame, self._front_stereo_frame, rclpy.time.Time()

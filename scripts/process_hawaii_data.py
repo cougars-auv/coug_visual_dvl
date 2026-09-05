@@ -22,6 +22,7 @@ from pathlib import Path
 
 import cv2
 import numpy as np
+import numpy.typing as npt
 
 BASE_DIR = Path(os.environ["OVERLAY_WS"]) / "src" / "coug_visual_dvl"
 
@@ -32,7 +33,7 @@ CALIB_FILE = BASE_DIR / "scripts" / "stereo_calibration_params.json"
 STEREO_PAIRS = BASE_DIR / "scripts" / "mission_stereo_pairs.json"
 
 
-def _load_bayer_bmp(filepath: str) -> np.ndarray:
+def _load_bayer_bmp(filepath: str) -> npt.NDArray[np.uint8]:
     with open(filepath, "rb") as f:
         f.seek(10)
         start = struct.unpack("<I", f.read(4))[0]
@@ -50,7 +51,9 @@ def _load_bayer_bmp(filepath: str) -> np.ndarray:
         img >>= 4  # Convert 12-bit to 8-bit
 
     gray = cv2.cvtColor(np.uint8(img), cv2.COLOR_BayerBG2GRAY)
-    return cv2.normalize(gray, None, 0, 255, cv2.NORM_MINMAX)
+    return np.asarray(
+        cv2.normalize(gray, None, 0, 255, cv2.NORM_MINMAX), dtype=np.uint8
+    )
 
 
 def main() -> None:
@@ -80,7 +83,8 @@ def main() -> None:
         image_back = _load_bayer_bmp(str(back_path))
 
         if estimator is None:
-            estimator = VisualDvl(calib_dict, image_front.shape[::-1])
+            height, width = image_front.shape[:2]
+            estimator = VisualDvl(calib_dict, (width, height))
 
         velocity, _ = estimator.estimate_velocity(image_front, image_back, dt)
         vx, vy, vz = velocity[0], velocity[1], velocity[2]

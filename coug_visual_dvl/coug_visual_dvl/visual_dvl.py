@@ -12,8 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Any
+
 import cv2
 import numpy as np
+import numpy.typing as npt
 
 MAX_CORNERS = 200
 QUALITY_LEVEL = 0.01
@@ -26,9 +29,9 @@ MIN_POINTS_FOR_LLS = 3
 
 
 class VisualDvl:
-    def __init__(self, calib_dict: dict, img_size: tuple) -> None:
+    def __init__(self, calib_dict: dict[str, Any], img_size: tuple[int, int]) -> None:
         (
-            self.rect_R_front,
+            self._rect_R_front,
             self._rect_R_back,
             self._front_projection,
             self._back_projection,
@@ -49,7 +52,7 @@ class VisualDvl:
         self._front_remap_x, self._front_remap_y = cv2.initUndistortRectifyMap(
             np.array(calib_dict["mtx_f"]),
             np.array(calib_dict["dist_f"]),
-            self.rect_R_front,
+            self._rect_R_front,
             self._front_projection,
             img_size,
             cv2.CV_32FC1,
@@ -67,12 +70,15 @@ class VisualDvl:
         self._prev_points_front = None
 
     @property
-    def rect_R_front(self) -> np.ndarray:
-        return self.rect_R_front
+    def rect_R_front(self) -> npt.NDArray[np.float64]:
+        return np.asarray(self._rect_R_front, dtype=np.float64)
 
     def estimate_velocity(
-        self, image_front: np.ndarray, image_back: np.ndarray, dt: float
-    ) -> tuple[np.ndarray, np.ndarray]:
+        self,
+        image_front: npt.NDArray[np.uint8],
+        image_back: npt.NDArray[np.uint8],
+        dt: float,
+    ) -> tuple[npt.NDArray[np.float64], npt.NDArray[np.float64]]:
         rect_front = cv2.remap(
             image_front, self._front_remap_x, self._front_remap_y, cv2.INTER_LINEAR
         )
