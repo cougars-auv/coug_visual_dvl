@@ -1,7 +1,7 @@
-.env
-__pycache__
-.venv
-.vscode
-
 hawaii_data/*
 !hawaii_data/.gitkeep
+
+.env
+.venv
+.vscode
+__pycache__
