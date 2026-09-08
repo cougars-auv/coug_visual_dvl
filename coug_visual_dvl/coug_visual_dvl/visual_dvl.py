@@ -82,18 +82,14 @@ class VisualDvl:
         rect_front = cv2.remap(
             image_front, self._front_remap_x, self._front_remap_y, cv2.INTER_LINEAR
         )
-        rect_back = cv2.remap(
-            image_back, self._back_remap_x, self._back_remap_y, cv2.INTER_LINEAR
-        )
+        rect_back = cv2.remap(image_back, self._back_remap_x, self._back_remap_y, cv2.INTER_LINEAR)
         gray_front = (
             cv2.cvtColor(rect_front, cv2.COLOR_BGR2GRAY)
             if len(rect_front.shape) == 3
             else rect_front
         )
         gray_back = (
-            cv2.cvtColor(rect_back, cv2.COLOR_BGR2GRAY)
-            if len(rect_back.shape) == 3
-            else rect_back
+            cv2.cvtColor(rect_back, cv2.COLOR_BGR2GRAY) if len(rect_back.shape) == 3 else rect_back
         )
 
         if dt <= 0.0 or self._prev_gray_front is None:
@@ -117,9 +113,7 @@ class VisualDvl:
                 curr_points[valid] if valid.sum() > 0 else None
             )  # Current feature positions
             prev_points = (
-                self._prev_points_front[valid].reshape(-1, 2)
-                if valid.sum() > 0
-                else None
+                self._prev_points_front[valid].reshape(-1, 2) if valid.sum() > 0 else None
             )  # Previous feature positions
 
         # Detect new features when count drops below a threshold
@@ -137,9 +131,7 @@ class VisualDvl:
             self._prev_gray_front = gray_front
             self._prev_points_front = None
             return np.array([0.0, 0.0, 0.0]), np.empty((0, 3))
-        next_points_front = np.concatenate(
-            [x for x in [curr_points, new_points] if x is not None]
-        )
+        next_points_front = np.concatenate([x for x in [curr_points, new_points] if x is not None])
 
         points_3d = np.empty((0, 3))
         velocity = np.array([0.0, 0.0, 0.0])
@@ -149,8 +141,7 @@ class VisualDvl:
                 gray_front, gray_back, curr_points, None
             )
             epipolar_valid = (
-                np.abs(curr_points[:, 0, 0] - points_back[:, 0, 0])
-                <= EPIPOLAR_THRESHOLD_PX
+                np.abs(curr_points[:, 0, 0] - points_back[:, 0, 0]) <= EPIPOLAR_THRESHOLD_PX
             )
             stereo_valid = (
                 stereo_status.ravel() == 1
@@ -221,9 +212,7 @@ class VisualDvl:
                     ]
                 )
                 measured_flow = np.concatenate([flow[:, 0], flow[:, 1]])
-                twist_solution, _, _, _ = np.linalg.lstsq(
-                    J_flow_twist, measured_flow, rcond=None
-                )
+                twist_solution, _, _, _ = np.linalg.lstsq(J_flow_twist, measured_flow, rcond=None)
                 velocity = twist_solution[:3]
 
         self._prev_gray_front = gray_front

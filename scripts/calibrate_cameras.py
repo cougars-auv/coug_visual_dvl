@@ -33,11 +33,7 @@ ALL_PAIRS_OUTPUT = BASE_DIR / "scripts" / "all_stereo_pairs.json"
 GOOD_PAIRS_OUTPUT = BASE_DIR / "scripts" / "good_stereo_pairs.json"
 VERIFIED_PAIRS_OUTPUT = BASE_DIR / "scripts" / "verified_stereo_pairs.json"
 
-MISSION_DIR = (
-    BASE_DIR
-    / "hawaii_data"
-    / "20240418-130518--2024-04-18_oahu_zblocks_4mHFB-IVER3-3100"
-)
+MISSION_DIR = BASE_DIR / "hawaii_data" / "20240418-130518--2024-04-18_oahu_zblocks_4mHFB-IVER3-3100"
 MISSION_FRONT_DIR = MISSION_DIR / "DEV_000F314F3266"
 MISSION_BACK_DIR = MISSION_DIR / "DEV_000F314F3269"
 MISSION_PAIRS_OUTPUT = BASE_DIR / "scripts" / "mission_stereo_pairs.json"
@@ -66,9 +62,7 @@ def _load_bayer_bmp(filepath: str) -> npt.NDArray[np.uint8]:
         img >>= 4  # Convert 12-bit to 8-bit
 
     gray = cv2.cvtColor(np.uint8(img), cv2.COLOR_BayerBG2GRAY)
-    return np.asarray(
-        cv2.normalize(gray, None, 0, 255, cv2.NORM_MINMAX), dtype=np.uint8
-    )
+    return np.asarray(cv2.normalize(gray, None, 0, 255, cv2.NORM_MINMAX), dtype=np.uint8)
 
 
 def _index_by_bucket(directory: Path) -> dict[int, Path]:
@@ -135,12 +129,8 @@ else:
         image_front = clahe.apply(_load_bayer_bmp(str(front_path)))
         image_back = clahe.apply(_load_bayer_bmp(str(back_path)))
 
-        found_front, corners_front = cv2.findChessboardCornersSB(
-            image_front, BOARD_SIZE, None
-        )
-        found_back, corners_back = cv2.findChessboardCornersSB(
-            image_back, BOARD_SIZE, None
-        )
+        found_front, corners_front = cv2.findChessboardCornersSB(image_front, BOARD_SIZE, None)
+        found_back, corners_back = cv2.findChessboardCornersSB(image_back, BOARD_SIZE, None)
 
         if found_front and found_back:
             pair_data = pair.copy()
@@ -149,9 +139,7 @@ else:
             good_pairs.append(pair_data)
 
         if i % 50 == 0 or i == len(all_pairs) - 1:
-            print(
-                f"Scanned {i}/{len(all_pairs)}... Good pairs so far: {len(good_pairs)}"
-            )
+            print(f"Scanned {i}/{len(all_pairs)}... Good pairs so far: {len(good_pairs)}")
 
     GOOD_PAIRS_OUTPUT.write_text(json.dumps(good_pairs, indent=2))
     print(f"Good stereo pairs: {len(good_pairs)}\n")
@@ -187,9 +175,7 @@ for i, pair in enumerate(loaded_good_pairs):
     combined_img = np.vstack((display_front, display_back))
     combined_img = cv2.resize(combined_img, (0, 0), fx=0.25, fy=0.25)
 
-    overlay_text = (
-        f"{i + 1}/{len(loaded_good_pairs)} | [y] Accept | [n] Reject | [q] Save & Quit"
-    )
+    overlay_text = f"{i + 1}/{len(loaded_good_pairs)} | [y] Accept | [n] Reject | [q] Save & Quit"
     cv2.putText(
         combined_img,
         overlay_text,

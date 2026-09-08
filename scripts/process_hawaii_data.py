@@ -51,9 +51,7 @@ def _load_bayer_bmp(filepath: str) -> npt.NDArray[np.uint8]:
         img >>= 4  # Convert 12-bit to 8-bit
 
     gray = cv2.cvtColor(np.uint8(img), cv2.COLOR_BayerBG2GRAY)
-    return np.asarray(
-        cv2.normalize(gray, None, 0, 255, cv2.NORM_MINMAX), dtype=np.uint8
-    )
+    return np.asarray(cv2.normalize(gray, None, 0, 255, cv2.NORM_MINMAX), dtype=np.uint8)
 
 
 def main() -> None:

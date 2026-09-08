@@ -112,11 +112,7 @@ class VisualDvlNode(Node):
 
         curr_time = rclpy.time.Time.from_msg(front_msg.header.stamp)
 
-        if (
-            self._visual_dvl is None
-            or self._last_time is None
-            or self._vel_R_rect is None
-        ):
+        if self._visual_dvl is None or self._last_time is None or self._vel_R_rect is None:
             try:
                 back_T_front_tf = self._tf_buffer.lookup_transform(
                     self._back_stereo_frame, self._front_stereo_frame, rclpy.time.Time()
