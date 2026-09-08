@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>coug_visual_dvl</name>
@@ -7,8 +7,7 @@
   <maintainer email="snelsond@byu.edu">snelsondurrant</maintainer>
   <license>Apache-2.0</license>
 
-  <exec_depend>launch</exec_depend>
-  <exec_depend>launch_ros</exec_depend>
+  <buildtool_depend>ament_python</buildtool_depend>
 
   <depend>cv_bridge</depend>
   <depend>geometry_msgs</depend>
@@ -20,6 +19,9 @@
   <depend>sensor_msgs</depend>
   <depend>tf2_geometry_msgs</depend>
   <depend>tf2_ros</depend>
+
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
 
   <test_depend>python3-pytest</test_depend>
   <test_depend>python3-pytest-cov</test_depend>
