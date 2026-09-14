@@ -4,7 +4,7 @@
   <name>coug_visual_dvl</name>
   <version>0.0.0</version>
   <description>Visual velocity estimation from camera imagery.</description>
-  <maintainer email="snelsond@byu.edu">snelsondurrant</maintainer>
+  <maintainer email="snelsond@byu.edu">Nelson Durrant</maintainer>
   <license>Apache-2.0</license>
 
   <depend>cv_bridge</depend>
