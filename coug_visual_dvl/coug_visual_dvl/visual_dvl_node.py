@@ -24,7 +24,12 @@ from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data, qos_profile_system_default
 from scipy.spatial.transform import Rotation
 from sensor_msgs.msg import CameraInfo, Image
-from tf2_ros import Buffer, TransformBroadcaster, TransformException, TransformListener
+from tf2_ros import (  # type: ignore[attr-defined, unused-ignore]
+    Buffer,
+    TransformBroadcaster,
+    TransformException,
+    TransformListener,
+)
 
 from coug_visual_dvl.visual_dvl import VisualDvl
 
