@@ -44,6 +44,7 @@ def generate_launch_description() -> LaunchDescription:
             [agent_ns, "_params.yaml"],
         ]
     )
+    scenario_param_file = LaunchConfiguration("scenario_param_file")
 
     dvl_link_frame = agent_frame(agent_ns, "dvl_link")
     front_stereo_optical_frame = agent_frame(agent_ns, "front_stereo_optical_link")
@@ -59,6 +60,10 @@ def generate_launch_description() -> LaunchDescription:
                 "agent_ns",
                 default_value="auv0",
             ),
+            DeclareLaunchArgument(
+                "scenario_param_file",
+                default_value=agent_param_file,
+            ),
             Node(
                 package="coug_visual_dvl",
                 executable="visual_dvl",
@@ -66,6 +71,7 @@ def generate_launch_description() -> LaunchDescription:
                 parameters=[
                     fleet_param_file,
                     agent_param_file,
+                    scenario_param_file,
                     {
                         "use_sim_time": use_sim_time,
                         "vel_frame": dvl_link_frame,
