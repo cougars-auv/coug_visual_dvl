@@ -41,7 +41,7 @@ def generate_launch_description() -> LaunchDescription:
     agent_param_file = PathJoinSubstitution(
         [
             EnvironmentVariable("CONFIG_DIR"),
-            PythonExpression(["'", agent_ns, "' + '_params.yaml'"]),
+            [agent_ns, "_params.yaml"],
         ]
     )
 
