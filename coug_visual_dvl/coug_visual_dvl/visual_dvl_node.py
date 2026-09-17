@@ -107,6 +107,7 @@ class VisualDvlNode(Node):
         back_msg: Image,
         front_info: CameraInfo,
         back_info: CameraInfo,
+        /,
     ) -> None:
         try:
             cv_front = self._bridge.imgmsg_to_cv2(front_msg, "bgr8")
@@ -167,10 +168,11 @@ class VisualDvlNode(Node):
 
             q = vel_T_front.transform.rotation
             vel_R_front = Rotation.from_quat([q.x, q.y, q.z, q.w]).as_matrix()
-            self._vel_R_rect = vel_R_front @ visual_dvl.rect_R_front.T
+            vel_R_rect: npt.NDArray[np.float64] = vel_R_front @ visual_dvl.rect_R_front.T
+            self._vel_R_rect = vel_R_rect
 
             # Conjugate the rectified-frame covariance into the DVL frame
-            covariance = self._vel_R_rect @ self._rect_covariance @ self._vel_R_rect.T
+            covariance = vel_R_rect @ self._rect_covariance @ vel_R_rect.T
             for i in range(3):
                 for j in range(3):
                     self._covariance[i * 6 + j] = float(covariance[i, j])
