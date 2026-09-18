@@ -33,6 +33,8 @@ from tf2_ros import (  # type: ignore[attr-defined, unused-ignore]
 
 from coug_visual_dvl.visual_dvl import VisualDvl
 
+_UNKNOWN_COVARIANCE = -1.0
+
 
 class VisualDvlNode(Node):
     def __init__(self) -> None:
@@ -196,7 +198,6 @@ class VisualDvlNode(Node):
             tf_msg.transform.translation.x = pt_front[0]
             tf_msg.transform.translation.y = pt_front[1]
             tf_msg.transform.translation.z = pt_front[2]
-            tf_msg.transform.rotation.w = 1.0
             tfs.append(tf_msg)
         self._feature_tf_pub.sendTransform(tfs)
 
@@ -210,6 +211,8 @@ class VisualDvlNode(Node):
         twist_msg.twist.twist.linear.y = velocity[1]
         twist_msg.twist.twist.linear.z = velocity[2]
         twist_msg.twist.covariance = self._covariance
+
+        twist_msg.twist.covariance[21] = _UNKNOWN_COVARIANCE
 
         self._vel_pub.publish(twist_msg)
 
