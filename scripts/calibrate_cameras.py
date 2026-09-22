@@ -116,8 +116,8 @@ print("Detecting chessboard corners to find good stereo pairs...")
 
 if GOOD_PAIRS_OUTPUT.exists():
     print(f"Found existing {GOOD_PAIRS_OUTPUT.name}. Skipping.\n")
-    with open(GOOD_PAIRS_OUTPUT) as f:
-        good_pairs = json.load(f)
+    with open(GOOD_PAIRS_OUTPUT) as pairs_file:
+        good_pairs = json.load(pairs_file)
 else:
     good_pairs = []
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
@@ -147,8 +147,8 @@ else:
 # %%
 print("Displaying good stereo pairs for review...")
 
-with open(GOOD_PAIRS_OUTPUT) as f:
-    loaded_good_pairs = json.load(f)
+with open(GOOD_PAIRS_OUTPUT) as pairs_file:
+    loaded_good_pairs = json.load(pairs_file)
 
 clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
 
@@ -211,8 +211,8 @@ print(f"Verified stereo pairs: {len(verified_pairs)}\n")
 # %%
 print("Using verified stereo pairs to calibrate the cameras...")
 
-with open(VERIFIED_PAIRS_OUTPUT) as f:
-    pairs = json.load(f)
+with open(VERIFIED_PAIRS_OUTPUT) as pairs_file:
+    pairs = json.load(pairs_file)
 
 object_points_template = np.zeros((np.prod(BOARD_SIZE), 3), np.float32)
 object_points_template[:, :2] = (

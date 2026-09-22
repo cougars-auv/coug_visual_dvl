@@ -87,7 +87,8 @@ def main() -> None:
         velocity, _ = estimator.estimate_velocity(image_front, image_back, dt)
         vx, vy, vz = velocity[0], velocity[1], velocity[2]
         print(
-            f"Time: {curr_time:.2f} s | dt: {dt:.3f} s | Velocity: [{vx:.3f}, {vy:.3f}, {vz:.3f}] m/s"
+            f"Time: {curr_time:.2f} s | dt: {dt:.3f} s | "
+            f"Velocity: [{vx:.3f}, {vy:.3f}, {vz:.3f}] m/s"
         )
 
 
