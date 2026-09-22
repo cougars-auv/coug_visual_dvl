@@ -40,8 +40,8 @@ class VisualDvlNode(Node):
     def __init__(self) -> None:
         super().__init__("visual_dvl_node")
 
-        self.declare_parameter("velocity_noise_sigmas", [0.5, 0.5, 2.0])
         self.declare_parameter("sync_slop_sec", 0.05)
+        self.declare_parameter("velocity_noise_sigmas", [0.5, 0.5, 2.0])
         self.declare_parameter("front_stereo_topic", "stereo/front/image_raw")
         self.declare_parameter("back_stereo_topic", "stereo/back/image_raw")
         self.declare_parameter("front_stereo_info_topic", "stereo/front/camera_info")
@@ -51,8 +51,8 @@ class VisualDvlNode(Node):
         self.declare_parameter("front_stereo_frame", "front_stereo_optical_link")
         self.declare_parameter("back_stereo_frame", "back_stereo_optical_link")
 
-        sigmas = self.get_parameter("velocity_noise_sigmas").value
         sync_slop_sec = self.get_parameter("sync_slop_sec").value
+        sigmas = self.get_parameter("velocity_noise_sigmas").value
         front_topic = self.get_parameter("front_stereo_topic").value
         back_topic = self.get_parameter("back_stereo_topic").value
         front_info_topic = self.get_parameter("front_stereo_info_topic").value
