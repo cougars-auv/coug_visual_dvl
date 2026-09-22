@@ -14,6 +14,7 @@
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
+from launch.substitution import Substitution
 from launch.substitutions import (
     EnvironmentVariable,
     LaunchConfiguration,
@@ -23,7 +24,7 @@ from launch.substitutions import (
 from launch_ros.actions import Node
 
 
-def agent_frame(agent_ns: LaunchConfiguration, frame: str) -> PythonExpression:
+def agent_frame(agent_ns: str | Substitution, frame: str) -> PythonExpression:
     return PythonExpression(["'", agent_ns, f"/{frame}' if '", agent_ns, f"' != '' else '{frame}'"])
 
 
