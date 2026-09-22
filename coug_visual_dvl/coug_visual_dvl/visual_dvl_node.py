@@ -126,7 +126,7 @@ class VisualDvlNode(Node):
                     self._back_stereo_frame, self._front_stereo_frame, rclpy.time.Time()
                 )
             except TransformException as e:
-                self.get_logger().warn(
+                self.get_logger().warning(
                     f"Could not transform {self._back_stereo_frame} to "
                     f"{self._front_stereo_frame}: {e}",
                     throttle_duration_sec=1.0,
@@ -161,7 +161,7 @@ class VisualDvlNode(Node):
                     self._vel_frame, self._front_stereo_frame, rclpy.time.Time()
                 )
             except TransformException as e:
-                self.get_logger().warn(
+                self.get_logger().warning(
                     f"Could not transform {self._vel_frame} to {self._front_stereo_frame}: {e}",
                     throttle_duration_sec=1.0,
                 )
