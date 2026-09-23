@@ -115,7 +115,7 @@ print(f"Matched mission stereo pairs: {len(mission_pairs)}\n")
 print("Detecting chessboard corners to find good stereo pairs...")
 
 if GOOD_PAIRS_OUTPUT.exists():
-    print(f"Found existing {GOOD_PAIRS_OUTPUT.name}. Skipping.\n")
+    print(f"Found existing {GOOD_PAIRS_OUTPUT.name}; skipping detection.\n")
     with open(GOOD_PAIRS_OUTPUT) as pairs_file:
         good_pairs = json.load(pairs_file)
 else:

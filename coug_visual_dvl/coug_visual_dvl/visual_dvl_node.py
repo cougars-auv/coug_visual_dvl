@@ -115,7 +115,7 @@ class VisualDvlNode(Node):
             cv_front = self._bridge.imgmsg_to_cv2(front_msg, "bgr8")
             cv_back = self._bridge.imgmsg_to_cv2(back_msg, "bgr8")
         except CvBridgeError as e:
-            self.get_logger().error(f"Failed to convert images: {e}")
+            self.get_logger().error(f"Failed to convert stereo images: {e}")
             return
 
         curr_time = rclpy.time.Time.from_msg(front_msg.header.stamp)
@@ -127,8 +127,8 @@ class VisualDvlNode(Node):
                 )
             except TransformException as e:
                 self.get_logger().warning(
-                    f"Could not transform {self._back_stereo_frame} to "
-                    f"{self._front_stereo_frame}: {e}",
+                    f"Failed to look up transform from '{self._front_stereo_frame}' to "
+                    f"'{self._back_stereo_frame}': {e}",
                     throttle_duration_sec=1.0,
                 )
                 return
@@ -151,7 +151,7 @@ class VisualDvlNode(Node):
             }
 
             self.get_logger().info(
-                f"Full camera calibration parameters: \n{json.dumps(calib_dict, indent=2)}"
+                f"Camera calibration loaded:\n{json.dumps(calib_dict, indent=2)}"
             )
             with open("/tmp/online_stereo_calibration_params.json", "w") as f:
                 json.dump(calib_dict, f, indent=2)
@@ -162,7 +162,7 @@ class VisualDvlNode(Node):
                 )
             except TransformException as e:
                 self.get_logger().warning(
-                    f"Could not transform {self._vel_frame} to {self._front_stereo_frame}: {e}",
+                    f"Failed to look up transform from '{self._front_stereo_frame}' to '{self._vel_frame}': {e}",
                     throttle_duration_sec=1.0,
                 )
                 return
