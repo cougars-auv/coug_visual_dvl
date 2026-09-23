@@ -93,7 +93,7 @@ all_pairs = [
 ]
 
 ALL_PAIRS_OUTPUT.write_text(json.dumps(all_pairs, indent=2))
-print(f"Matched stereo pairs: {len(all_pairs)}")
+print(f"Matched {len(all_pairs)} stereo pair(s).")
 
 mission_front_map = _index_by_bucket(MISSION_FRONT_DIR)
 mission_back_map = _index_by_bucket(MISSION_BACK_DIR)
@@ -109,13 +109,13 @@ mission_pairs = [
 ]
 
 MISSION_PAIRS_OUTPUT.write_text(json.dumps(mission_pairs, indent=2))
-print(f"Matched mission stereo pairs: {len(mission_pairs)}\n")
+print(f"Matched {len(mission_pairs)} mission stereo pair(s).\n")
 
 # %%
 print("Detecting chessboard corners to find good stereo pairs...")
 
 if GOOD_PAIRS_OUTPUT.exists():
-    print(f"Found existing {GOOD_PAIRS_OUTPUT.name}; skipping detection.\n")
+    print(f"Found existing '{GOOD_PAIRS_OUTPUT.name}'; skipping detection.\n")
     with open(GOOD_PAIRS_OUTPUT) as pairs_file:
         good_pairs = json.load(pairs_file)
 else:
@@ -139,10 +139,10 @@ else:
             good_pairs.append(pair_data)
 
         if i % 50 == 0 or i == len(all_pairs) - 1:
-            print(f"Scanned {i}/{len(all_pairs)}... Good pairs so far: {len(good_pairs)}")
+            print(f"Scanned {i}/{len(all_pairs)} stereo pair(s); {len(good_pairs)} good so far.")
 
     GOOD_PAIRS_OUTPUT.write_text(json.dumps(good_pairs, indent=2))
-    print(f"Good stereo pairs: {len(good_pairs)}\n")
+    print(f"Found {len(good_pairs)} good stereo pair(s).\n")
 
 # %%
 print("Displaying good stereo pairs for review...")
@@ -192,10 +192,10 @@ for i, pair in enumerate(loaded_good_pairs):
         key = cv2.waitKey(0) & 0xFF
         if key == ord("y"):
             verified_pairs.append(pair)
-            print(f"[{i + 1}/{len(loaded_good_pairs)}] Accepted")
+            print(f"[{i + 1}/{len(loaded_good_pairs)}] Accepted.")
             break
         elif key == ord("n"):
-            print(f"[{i + 1}/{len(loaded_good_pairs)}] Rejected")
+            print(f"[{i + 1}/{len(loaded_good_pairs)}] Rejected.")
             break
         elif key == ord("q"):
             break
@@ -206,7 +206,7 @@ for i, pair in enumerate(loaded_good_pairs):
 cv2.destroyAllWindows()
 
 VERIFIED_PAIRS_OUTPUT.write_text(json.dumps(verified_pairs, indent=2))
-print(f"Verified stereo pairs: {len(verified_pairs)}\n")
+print(f"Verified {len(verified_pairs)} stereo pair(s).\n")
 
 # %%
 print("Using verified stereo pairs to calibrate the cameras...")
@@ -228,12 +228,12 @@ img_size = _load_bayer_bmp(str(BASE_DIR / pairs[0]["front"])).shape[::-1]
 rmse_front, front_camera_matrix, front_dist_coeffs, *_ = cv2.calibrateCamera(
     object_points, image_points_front, img_size, None, None
 )
-print(f"Front Camera RMSE (pixels): {rmse_front:.3f}")
+print(f"Front camera RMSE: {rmse_front:.3f} px.")
 
 rmse_back, back_camera_matrix, back_dist_coeffs, *_ = cv2.calibrateCamera(
     object_points, image_points_back, img_size, None, None
 )
-print(f"Back Camera RMSE (pixels): {rmse_back:.3f}")
+print(f"Back camera RMSE: {rmse_back:.3f} px.")
 
 (
     rmse_stereo,
@@ -257,7 +257,7 @@ print(f"Back Camera RMSE (pixels): {rmse_back:.3f}")
     criteria=(cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 1e-5),
     flags=cv2.CALIB_FIX_INTRINSIC,
 )
-print(f"Stereo RMSE (pixels): {rmse_stereo:.3f}\n")
+print(f"Stereo RMSE: {rmse_stereo:.3f} px.\n")
 
 calib_data = {
     k: v.tolist()

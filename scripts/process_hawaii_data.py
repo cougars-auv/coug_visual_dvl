@@ -70,7 +70,7 @@ def main() -> None:
 
         match = re.search(r"_(\d+)_raw\.bmp$", pair["front"])
         if not match:
-            print(f"Skipping {pair['front']}: could not parse timestamp.")
+            print(f"Skipping '{pair['front']}': could not parse timestamp.")
             continue
 
         curr_time = int(match.group(1)) * 1e-9
