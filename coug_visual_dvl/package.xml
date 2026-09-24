@@ -7,18 +7,16 @@
   <maintainer email="snelsond@byu.edu">Nelson Durrant</maintainer>
   <license>Apache-2.0</license>
 
-  <depend>cv_bridge</depend>
-  <depend>geometry_msgs</depend>
-  <depend>message_filters</depend>
-  <depend>python3-numpy</depend>
-  <depend>python3-opencv</depend>
-  <depend>python3-scipy</depend>
-  <depend>rclpy</depend>
-  <depend>sensor_msgs</depend>
-  <depend>tf2_ros</depend>
-
+  <exec_depend>cv_bridge</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>launch</exec_depend>
   <exec_depend>launch_ros</exec_depend>
+  <exec_depend>message_filters</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>python3-opencv</exec_depend>
+  <exec_depend>python3-scipy</exec_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>tf2_ros_py</exec_depend>
 
   <test_depend>python3-pytest</test_depend>
