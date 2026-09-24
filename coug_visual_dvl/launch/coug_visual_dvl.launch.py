@@ -35,15 +35,15 @@ def launch_setup(context: LaunchContext, *args: Any, **kwargs: Any) -> list[Acti
     use_sim_time = LaunchConfiguration("use_sim_time")
     agent_ns = LaunchConfiguration("agent_ns")
 
+    scenario_param_path = LaunchConfiguration("scenario_param_file").perform(context)
+
     fleet_param_file = PathJoinSubstitution(
         [EnvironmentVariable("CONFIG_DIR"), "fleet", "coug_visual_dvl_params.yaml"]
     )
     agent_param_file = PathJoinSubstitution(
         [EnvironmentVariable("CONFIG_DIR"), [agent_ns, "_params.yaml"]]
     )
-    scenario_param_file = (
-        LaunchConfiguration("scenario_param_file").perform(context) or agent_param_file
-    )
+    scenario_param_file = scenario_param_path or agent_param_file
 
     dvl_link_frame = agent_frame(agent_ns, "dvl_link")
     front_stereo_optical_frame = agent_frame(agent_ns, "front_stereo_optical_link")
