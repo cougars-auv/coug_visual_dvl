@@ -58,11 +58,12 @@ class VisualDvlNode(Node):
         front_info_topic = self.get_parameter("front_stereo_info_topic").value
         back_info_topic = self.get_parameter("back_stereo_info_topic").value
         vel_topic = self.get_parameter("vel_topic").value
-        self._rect_covariance = np.diag(np.square(np.asarray(sigmas[:3], dtype=float)))
-        self._covariance = [0.0] * 36
         self._vel_frame = self.get_parameter("vel_frame").value
         self._front_stereo_frame = self.get_parameter("front_stereo_frame").value
         self._back_stereo_frame = self.get_parameter("back_stereo_frame").value
+
+        self._rect_covariance = np.diag(np.square(np.asarray(sigmas[:3], dtype=float)))
+        self._covariance = [0.0] * 36
 
         self._tf_buffer = Buffer()
         self._tf_listener = TransformListener(self._tf_buffer, self)
