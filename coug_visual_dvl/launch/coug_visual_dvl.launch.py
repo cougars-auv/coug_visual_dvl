@@ -60,7 +60,7 @@ def launch_setup(context: LaunchContext, *args: Any, **kwargs: Any) -> list[Acti
                 scenario_param_file,
                 {
                     "use_sim_time": use_sim_time,
-                    "vel_frame": dvl_link_frame,
+                    "velocity_frame": dvl_link_frame,
                     "front_stereo_frame": front_stereo_optical_frame,
                     "back_stereo_frame": back_stereo_optical_frame,
                 },

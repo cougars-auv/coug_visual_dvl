@@ -42,23 +42,23 @@ class VisualDvlNode(Node):
 
         self.declare_parameter("sync_slop_sec", 0.05)
         self.declare_parameter("velocity_noise_sigmas", [0.5, 0.5, 2.0])
-        self.declare_parameter("front_stereo_topic", "stereo/front/image_raw")
-        self.declare_parameter("back_stereo_topic", "stereo/back/image_raw")
-        self.declare_parameter("front_stereo_info_topic", "stereo/front/camera_info")
-        self.declare_parameter("back_stereo_info_topic", "stereo/back/camera_info")
-        self.declare_parameter("vel_topic", "dvl/visual")
-        self.declare_parameter("vel_frame", "dvl_link")
+        self.declare_parameter("front_image_topic", "stereo/front/image_raw")
+        self.declare_parameter("back_image_topic", "stereo/back/image_raw")
+        self.declare_parameter("front_info_topic", "stereo/front/camera_info")
+        self.declare_parameter("back_info_topic", "stereo/back/camera_info")
+        self.declare_parameter("velocity_topic", "dvl/visual")
+        self.declare_parameter("velocity_frame", "dvl_link")
         self.declare_parameter("front_stereo_frame", "front_stereo_optical_link")
         self.declare_parameter("back_stereo_frame", "back_stereo_optical_link")
 
         sync_slop_sec = self.get_parameter("sync_slop_sec").value
         sigmas = self.get_parameter("velocity_noise_sigmas").value
-        front_topic = self.get_parameter("front_stereo_topic").value
-        back_topic = self.get_parameter("back_stereo_topic").value
-        front_info_topic = self.get_parameter("front_stereo_info_topic").value
-        back_info_topic = self.get_parameter("back_stereo_info_topic").value
-        vel_topic = self.get_parameter("vel_topic").value
-        self._vel_frame = self.get_parameter("vel_frame").value
+        front_image_topic = self.get_parameter("front_image_topic").value
+        back_image_topic = self.get_parameter("back_image_topic").value
+        front_info_topic = self.get_parameter("front_info_topic").value
+        back_info_topic = self.get_parameter("back_info_topic").value
+        velocity_topic = self.get_parameter("velocity_topic").value
+        self._velocity_frame = self.get_parameter("velocity_frame").value
         self._front_stereo_frame = self.get_parameter("front_stereo_frame").value
         self._back_stereo_frame = self.get_parameter("back_stereo_frame").value
 
@@ -69,11 +69,11 @@ class VisualDvlNode(Node):
         self._tf_listener = TransformListener(self._tf_buffer, self)
         self._feature_tf_pub = TransformBroadcaster(self)
 
-        self._front_sub = message_filters.Subscriber(
-            self, Image, front_topic, qos_profile=qos_profile_sensor_data
+        self._front_image_sub = message_filters.Subscriber(
+            self, Image, front_image_topic, qos_profile=qos_profile_sensor_data
         )
-        self._back_sub = message_filters.Subscriber(
-            self, Image, back_topic, qos_profile=qos_profile_sensor_data
+        self._back_image_sub = message_filters.Subscriber(
+            self, Image, back_image_topic, qos_profile=qos_profile_sensor_data
         )
         self._front_info_sub = message_filters.Subscriber(
             self, CameraInfo, front_info_topic, qos_profile=qos_profile_sensor_data
@@ -84,8 +84,8 @@ class VisualDvlNode(Node):
 
         self._time_sync = message_filters.ApproximateTimeSynchronizer(
             [
-                self._front_sub,
-                self._back_sub,
+                self._front_image_sub,
+                self._back_image_sub,
                 self._front_info_sub,
                 self._back_info_sub,
             ],
@@ -94,8 +94,8 @@ class VisualDvlNode(Node):
         )
         self._time_sync.registerCallback(self._stereo_callback)
 
-        self._vel_pub = self.create_publisher(
-            TwistWithCovarianceStamped, vel_topic, qos_profile_system_default
+        self._velocity_pub = self.create_publisher(
+            TwistWithCovarianceStamped, velocity_topic, qos_profile_system_default
         )
 
         self._visual_dvl: VisualDvl | None = None
@@ -160,11 +160,11 @@ class VisualDvlNode(Node):
 
             try:
                 vel_T_front = self._tf_buffer.lookup_transform(
-                    self._vel_frame, self._front_stereo_frame, rclpy.time.Time()
+                    self._velocity_frame, self._front_stereo_frame, rclpy.time.Time()
                 )
             except TransformException as e:
                 self.get_logger().warning(
-                    f"Failed to look up transform from '{self._front_stereo_frame}' to '{self._vel_frame}': {e}",
+                    f"Failed to look up transform from '{self._front_stereo_frame}' to '{self._velocity_frame}': {e}",
                     throttle_duration_sec=1.0,
                 )
                 return
@@ -209,7 +209,7 @@ class VisualDvlNode(Node):
 
         twist_msg = TwistWithCovarianceStamped()
         twist_msg.header.stamp = front_msg.header.stamp
-        twist_msg.header.frame_id = self._vel_frame
+        twist_msg.header.frame_id = self._velocity_frame
         twist_msg.twist.twist.linear.x = velocity[0]
         twist_msg.twist.twist.linear.y = velocity[1]
         twist_msg.twist.twist.linear.z = velocity[2]
@@ -217,7 +217,7 @@ class VisualDvlNode(Node):
 
         twist_msg.twist.covariance[21] = _UNKNOWN_COVARIANCE
 
-        self._vel_pub.publish(twist_msg)
+        self._velocity_pub.publish(twist_msg)
 
 
 def main(args: list[str] | None = None) -> None:
