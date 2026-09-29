@@ -159,7 +159,7 @@ class VisualDvlNode(Node):
                 json.dump(calib_dict, f, indent=2)
 
             try:
-                vel_T_front = self._tf_buffer.lookup_transform(
+                vel_T_front_tf = self._tf_buffer.lookup_transform(
                     self._velocity_frame, self._front_stereo_frame, rclpy.time.Time()
                 )
             except TransformException as e:
@@ -171,7 +171,7 @@ class VisualDvlNode(Node):
 
             visual_dvl = VisualDvl(calib_dict, (front_info.width, front_info.height))
 
-            q = vel_T_front.transform.rotation
+            q = vel_T_front_tf.transform.rotation
             vel_R_front = Rotation.from_quat([q.x, q.y, q.z, q.w]).as_matrix()
             vel_R_rect: npt.NDArray[np.float64] = vel_R_front @ visual_dvl.rect_R_front.T
             self._vel_R_rect = vel_R_rect
