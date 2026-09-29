@@ -242,7 +242,7 @@ print(f"Back camera RMSE: {rmse_back:.3f} px.")
     back_camera_matrix,
     back_dist_coeffs,
     back_R_front,
-    back_t_front,
+    back_p_front,
     essential_matrix,
     fundamental_matrix,
 ) = cv2.stereoCalibrate(
@@ -269,7 +269,7 @@ calib_data = {
             back_camera_matrix,
             back_dist_coeffs,
             back_R_front,
-            back_t_front,
+            back_p_front,
             essential_matrix,
             fundamental_matrix,
         ],

@@ -137,7 +137,7 @@ class VisualDvlNode(Node):
 
             q = back_T_front_tf.transform.rotation
             back_R_front = Rotation.from_quat([q.x, q.y, q.z, q.w]).as_matrix().tolist()
-            back_t_front = [
+            back_p_front = [
                 [back_T_front_tf.transform.translation.x],
                 [back_T_front_tf.transform.translation.y],
                 [back_T_front_tf.transform.translation.z],
@@ -149,7 +149,7 @@ class VisualDvlNode(Node):
                 "mtx_b": np.array(back_info.k).reshape(3, 3).tolist(),
                 "dist_b": list(back_info.d),
                 "R": back_R_front,
-                "T": back_t_front,
+                "T": back_p_front,
             }
 
             self.get_logger().info(
