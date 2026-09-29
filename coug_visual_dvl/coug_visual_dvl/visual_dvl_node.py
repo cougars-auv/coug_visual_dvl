@@ -64,12 +64,9 @@ class VisualDvlNode(Node):
         self._front_stereo_frame = self.get_parameter("front_stereo_frame").value
         self._back_stereo_frame = self.get_parameter("back_stereo_frame").value
 
-        self._vel_pub = self.create_publisher(
-            TwistWithCovarianceStamped, vel_topic, qos_profile_system_default
-        )
-        self._feature_tf_pub = TransformBroadcaster(self)
         self._tf_buffer = Buffer()
         self._tf_listener = TransformListener(self._tf_buffer, self)
+        self._feature_tf_pub = TransformBroadcaster(self)
 
         self._front_sub = message_filters.Subscriber(
             self, Image, front_topic, qos_profile=qos_profile_sensor_data
@@ -95,6 +92,10 @@ class VisualDvlNode(Node):
             slop=sync_slop_sec,
         )
         self._time_sync.registerCallback(self._stereo_callback)
+
+        self._vel_pub = self.create_publisher(
+            TwistWithCovarianceStamped, vel_topic, qos_profile_system_default
+        )
 
         self._visual_dvl: VisualDvl | None = None
         self._vel_R_rect: npt.NDArray[np.float64] | None = None
