@@ -123,67 +123,7 @@ class VisualDvlNode(Node):
         curr_time = rclpy.time.Time.from_msg(front_msg.header.stamp)
 
         if self._visual_dvl is None or self._last_time is None or self._vel_R_rect is None:
-            try:
-                back_T_front_tf = self._tf_buffer.lookup_transform(
-                    self._back_stereo_frame, self._front_stereo_frame, rclpy.time.Time()
-                )
-            except TransformException as e:
-                self.get_logger().warning(
-                    f"Failed to look up transform from '{self._front_stereo_frame}' to "
-                    f"'{self._back_stereo_frame}': {e}",
-                    throttle_duration_sec=1.0,
-                )
-                return
-
-            q = back_T_front_tf.transform.rotation
-            back_R_front = Rotation.from_quat([q.x, q.y, q.z, q.w]).as_matrix().tolist()
-            back_p_front = [
-                [back_T_front_tf.transform.translation.x],
-                [back_T_front_tf.transform.translation.y],
-                [back_T_front_tf.transform.translation.z],
-            ]
-
-            calib_dict = {
-                "mtx_f": np.array(front_info.k).reshape(3, 3).tolist(),
-                "dist_f": list(front_info.d),
-                "mtx_b": np.array(back_info.k).reshape(3, 3).tolist(),
-                "dist_b": list(back_info.d),
-                "R": back_R_front,
-                "T": back_p_front,
-            }
-
-            self.get_logger().info(
-                f"Camera calibration loaded:\n{json.dumps(calib_dict, indent=2)}"
-            )
-            with open("/tmp/online_stereo_calibration_params.json", "w") as f:
-                json.dump(calib_dict, f, indent=2)
-
-            try:
-                vel_T_front_tf = self._tf_buffer.lookup_transform(
-                    self._velocity_frame, self._front_stereo_frame, rclpy.time.Time()
-                )
-            except TransformException as e:
-                self.get_logger().warning(
-                    f"Failed to look up transform from '{self._front_stereo_frame}' to '{self._velocity_frame}': {e}",
-                    throttle_duration_sec=1.0,
-                )
-                return
-
-            visual_dvl = VisualDvl(calib_dict, (front_info.width, front_info.height))
-
-            q = vel_T_front_tf.transform.rotation
-            vel_R_front = Rotation.from_quat([q.x, q.y, q.z, q.w]).as_matrix()
-            vel_R_rect: npt.NDArray[np.float64] = vel_R_front @ visual_dvl.rect_R_front.T
-            self._vel_R_rect = vel_R_rect
-
-            # Conjugate the rectified-frame covariance into the DVL frame
-            covariance = vel_R_rect @ self._rect_covariance @ vel_R_rect.T
-            for i in range(3):
-                for j in range(3):
-                    self._covariance[i * 6 + j] = float(covariance[i, j])
-
-            self._last_time = curr_time
-            self._visual_dvl = visual_dvl
+            self._initialize_visual_dvl(front_info, back_info, curr_time)
             return
 
         dt = (curr_time - self._last_time).nanoseconds * 1e-9
@@ -191,9 +131,83 @@ class VisualDvlNode(Node):
 
         velocities, pts_3d = self._visual_dvl.estimate_velocity(cv_front, cv_back, dt)
 
+        self._feature_tf_pub.sendTransform(
+            self._convert_to_feature_tfs(front_msg, pts_3d, self._visual_dvl.rect_R_front)
+        )
+        self._velocity_pub.publish(self._convert_to_twist(front_msg, velocities, self._vel_R_rect))
+
+    def _initialize_visual_dvl(
+        self, front_info: CameraInfo, back_info: CameraInfo, curr_time: rclpy.time.Time
+    ) -> None:
+        try:
+            back_T_front_tf = self._tf_buffer.lookup_transform(
+                self._back_stereo_frame, self._front_stereo_frame, rclpy.time.Time()
+            )
+        except TransformException as e:
+            self.get_logger().warning(
+                f"Failed to look up transform from '{self._front_stereo_frame}' to "
+                f"'{self._back_stereo_frame}': {e}",
+                throttle_duration_sec=1.0,
+            )
+            return
+
+        q = back_T_front_tf.transform.rotation
+        back_R_front = Rotation.from_quat([q.x, q.y, q.z, q.w]).as_matrix().tolist()
+        back_p_front = [
+            [back_T_front_tf.transform.translation.x],
+            [back_T_front_tf.transform.translation.y],
+            [back_T_front_tf.transform.translation.z],
+        ]
+
+        calib_dict = {
+            "mtx_f": np.array(front_info.k).reshape(3, 3).tolist(),
+            "dist_f": list(front_info.d),
+            "mtx_b": np.array(back_info.k).reshape(3, 3).tolist(),
+            "dist_b": list(back_info.d),
+            "R": back_R_front,
+            "T": back_p_front,
+        }
+
+        self.get_logger().info(f"Camera calibration loaded:\n{json.dumps(calib_dict, indent=2)}")
+        with open("/tmp/online_stereo_calibration_params.json", "w") as f:
+            json.dump(calib_dict, f, indent=2)
+
+        try:
+            vel_T_front_tf = self._tf_buffer.lookup_transform(
+                self._velocity_frame, self._front_stereo_frame, rclpy.time.Time()
+            )
+        except TransformException as e:
+            self.get_logger().warning(
+                f"Failed to look up transform from '{self._front_stereo_frame}' to '{self._velocity_frame}': {e}",
+                throttle_duration_sec=1.0,
+            )
+            return
+
+        visual_dvl = VisualDvl(calib_dict, (front_info.width, front_info.height))
+
+        q = vel_T_front_tf.transform.rotation
+        vel_R_front = Rotation.from_quat([q.x, q.y, q.z, q.w]).as_matrix()
+        vel_R_rect: npt.NDArray[np.float64] = vel_R_front @ visual_dvl.rect_R_front.T
+        self._vel_R_rect = vel_R_rect
+
+        # Conjugate the rectified-frame covariance into the DVL frame
+        covariance = vel_R_rect @ self._rect_covariance @ vel_R_rect.T
+        for i in range(3):
+            for j in range(3):
+                self._covariance[i * 6 + j] = float(covariance[i, j])
+
+        self._last_time = curr_time
+        self._visual_dvl = visual_dvl
+
+    def _convert_to_feature_tfs(
+        self,
+        front_msg: Image,
+        pts_3d: npt.NDArray[np.float64],
+        rect_R_front: npt.NDArray[np.float64],
+    ) -> list[TransformStamped]:
         tfs = []
         for i, pt_rect in enumerate(pts_3d):
-            pt_front = self._visual_dvl.rect_R_front.T @ pt_rect
+            pt_front = rect_R_front.T @ pt_rect
             tf_msg = TransformStamped()
             tf_msg.header.stamp = front_msg.header.stamp
             tf_msg.header.frame_id = self._front_stereo_frame
@@ -202,10 +216,16 @@ class VisualDvlNode(Node):
             tf_msg.transform.translation.y = pt_front[1]
             tf_msg.transform.translation.z = pt_front[2]
             tfs.append(tf_msg)
-        self._feature_tf_pub.sendTransform(tfs)
+        return tfs
 
+    def _convert_to_twist(
+        self,
+        front_msg: Image,
+        velocities: npt.NDArray[np.float64],
+        vel_R_rect: npt.NDArray[np.float64],
+    ) -> TwistWithCovarianceStamped:
         # Transform the velocity into the DVL frame
-        velocity = self._vel_R_rect @ velocities
+        velocity = vel_R_rect @ velocities
 
         twist_msg = TwistWithCovarianceStamped()
         twist_msg.header.stamp = front_msg.header.stamp
@@ -217,7 +237,7 @@ class VisualDvlNode(Node):
 
         twist_msg.twist.covariance[21] = _UNKNOWN_COVARIANCE
 
-        self._velocity_pub.publish(twist_msg)
+        return twist_msg
 
 
 def main(args: list[str] | None = None) -> None:
