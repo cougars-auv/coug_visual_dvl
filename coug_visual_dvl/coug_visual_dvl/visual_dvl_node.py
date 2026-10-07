@@ -178,7 +178,8 @@ class VisualDvlNode(Node):
             )
         except TransformException as e:
             self.get_logger().warning(
-                f"Failed to look up transform from '{self._front_stereo_frame}' to '{self._velocity_frame}': {e}",
+                f"Failed to look up transform from '{self._front_stereo_frame}' to "
+                f"'{self._velocity_frame}': {e}",
                 throttle_duration_sec=1.0,
             )
             return
