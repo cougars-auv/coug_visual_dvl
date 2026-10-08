@@ -13,7 +13,7 @@
 
 ### Motivation
 
-Doppler Velocity Logs (DVLs) use acoustics to provide high-accuracy linear velocity measurements relative to the seafloor. They are critical to autonomous underwater vehicle (AUV) localization systems, especially during extensive, GPS-denied underwater missions. However, DVLs are susceptible to challenging terrain such as steep dropoffs, acoustic-scattering surfaces, and marine life. When the DVL loses bottom lock and stops publishing reliable data, the localization system often relies purely on dead-reckoning from an Inertial Measurement Unit (IMU), which can quickly lead to rapid unbounded drift in positional accuracy. Developing a robust, vision-based alternative with downward-facing stereo cameras would provide critical linear velocity observability during DVL dropouts, effectively bounding navigation drift.
+Doppler Velocity Logs (DVLs) use acoustics to provide high-accuracy linear velocity measurements relative to the seafloor. They are critical to autonomous underwater vehicle (AUV) localization systems, especially during extensive, GPS-denied underwater missions. However, DVLs are susceptible to challenging terrain such as steep drop-offs, acoustic-scattering surfaces, and marine life. When the DVL loses bottom lock and stops publishing reliable data, the localization system often relies purely on dead reckoning from an Inertial Measurement Unit (IMU), which can lead to rapid, unbounded drift in positional accuracy. Developing a robust, vision-based alternative with downward-facing stereo cameras would provide critical linear velocity observability during DVL dropouts, effectively bounding navigation drift.
 
 We acknowledge that the correct approach to this problem is a full visual odometry pipeline that provides the estimator with more information than just linear velocity measurements. However, to limit the project scope and simplify integration into existing software, we’ve opted to strictly estimate 3D linear velocity, treating our computer vision pipeline as a sort of simulated hardware sensor.
 
@@ -47,7 +47,7 @@ To validate our approach, we plan to use the HoloOcean marine robotics simulator
 
 ### Hawaii Dataset Validation
 
-In addition to simulation validation, the FROST Lab has collected time-synchronized DVL and stereo camera imagery from IVER3 AUV field tests in Hawaii. We plan to use these images to estimate the AUV’s linear velocity and compare them against corresponding DVL measurements to get a RMSE metric using the same approach as in simulation. Comparing the dataset timestamps against the script processing duration will also serve as a real-time performance benchmark.
+In addition to simulation validation, the FROST Lab has collected time-synchronized DVL data and stereo camera imagery from IVER3 AUV field tests in Hawaii. We plan to use these images to estimate the AUV’s linear velocity and compare those estimates against corresponding DVL measurements to get an RMSE metric using the same approach as in simulation. Comparing the dataset timestamps against the script processing duration will also serve as a real-time performance benchmark.
 
 <br>
 
