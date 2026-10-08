@@ -34,6 +34,7 @@ from tf2_ros import (  # type: ignore[attr-defined, unused-ignore]
 from coug_visual_dvl.visual_dvl import VisualDvl
 
 _UNKNOWN_COVARIANCE = -1.0
+_NANOSECONDS_TO_SECONDS = 1e-9
 
 
 class VisualDvlNode(Node):
@@ -126,7 +127,7 @@ class VisualDvlNode(Node):
             self._initialize_visual_dvl(front_info, back_info, curr_time)
             return
 
-        dt = (curr_time - self._last_time).nanoseconds * 1e-9
+        dt = (curr_time - self._last_time).nanoseconds * _NANOSECONDS_TO_SECONDS
         self._last_time = curr_time
 
         velocities, pts_3d = self._visual_dvl.estimate_velocity(cv_front, cv_back, dt)

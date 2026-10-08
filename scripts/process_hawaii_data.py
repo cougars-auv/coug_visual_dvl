@@ -31,6 +31,7 @@ from coug_visual_dvl.visual_dvl import VisualDvl
 
 CALIB_FILE = BASE_DIR / "scripts" / "stereo_calibration_params.json"
 STEREO_PAIRS = BASE_DIR / "scripts" / "mission_stereo_pairs.json"
+NANOSECONDS_TO_SECONDS = 1e-9
 
 
 def _load_bayer_bmp(filepath: str) -> npt.NDArray[np.uint8]:
@@ -73,7 +74,7 @@ def main() -> None:
             print(f"Skipping '{pair['front']}': could not parse timestamp.")
             continue
 
-        curr_time = int(match.group(1)) * 1e-9
+        curr_time = int(match.group(1)) * NANOSECONDS_TO_SECONDS
         dt = curr_time - prev_time if prev_time is not None else 0.0
         prev_time = curr_time
 

@@ -41,6 +41,8 @@ MISSION_PAIRS_OUTPUT = BASE_DIR / "scripts" / "mission_stereo_pairs.json"
 BOARD_SIZE = (9, 6)
 SQUARE_SIZE = 0.05
 BUCKET_NS = 100_000_000  # 100 ms in nanoseconds
+STEREO_CALIB_MAX_ITER = 100
+STEREO_CALIB_EPS = 1e-5
 NS_RE = re.compile(r"_(\d+)_raw\.bmp$")
 
 
@@ -254,7 +256,11 @@ print(f"Back camera RMSE: {rmse_back:.3f} px.")
     back_camera_matrix,
     back_dist_coeffs,
     img_size,
-    criteria=(cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 1e-5),
+    criteria=(
+        cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER,
+        STEREO_CALIB_MAX_ITER,
+        STEREO_CALIB_EPS,
+    ),
     flags=cv2.CALIB_FIX_INTRINSIC,
 )
 print(f"Stereo RMSE: {rmse_stereo:.3f} px.\n")
