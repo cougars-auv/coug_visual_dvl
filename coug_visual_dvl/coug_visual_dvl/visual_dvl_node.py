@@ -45,8 +45,8 @@ class VisualDvlNode(Node):
         self.declare_parameter("velocity_noise_sigmas", [0.5, 0.5, 2.0])
         self.declare_parameter("front_image_topic", "stereo/front/image_raw")
         self.declare_parameter("back_image_topic", "stereo/back/image_raw")
-        self.declare_parameter("front_info_topic", "stereo/front/camera_info")
-        self.declare_parameter("back_info_topic", "stereo/back/camera_info")
+        self.declare_parameter("front_camera_info_topic", "stereo/front/camera_info")
+        self.declare_parameter("back_camera_info_topic", "stereo/back/camera_info")
         self.declare_parameter("velocity_topic", "dvl/visual")
         self.declare_parameter("velocity_frame", "dvl_link")
         self.declare_parameter("front_stereo_frame", "front_stereo_optical_link")
@@ -56,8 +56,8 @@ class VisualDvlNode(Node):
         sigmas = self.get_parameter("velocity_noise_sigmas").value
         front_image_topic = self.get_parameter("front_image_topic").value
         back_image_topic = self.get_parameter("back_image_topic").value
-        front_info_topic = self.get_parameter("front_info_topic").value
-        back_info_topic = self.get_parameter("back_info_topic").value
+        front_camera_info_topic = self.get_parameter("front_camera_info_topic").value
+        back_camera_info_topic = self.get_parameter("back_camera_info_topic").value
         velocity_topic = self.get_parameter("velocity_topic").value
         self._velocity_frame = self.get_parameter("velocity_frame").value
         self._front_stereo_frame = self.get_parameter("front_stereo_frame").value
@@ -76,19 +76,19 @@ class VisualDvlNode(Node):
         self._back_image_sub = message_filters.Subscriber(
             self, Image, back_image_topic, qos_profile=qos_profile_sensor_data
         )
-        self._front_info_sub = message_filters.Subscriber(
-            self, CameraInfo, front_info_topic, qos_profile=qos_profile_sensor_data
+        self._front_camera_info_sub = message_filters.Subscriber(
+            self, CameraInfo, front_camera_info_topic, qos_profile=qos_profile_sensor_data
         )
-        self._back_info_sub = message_filters.Subscriber(
-            self, CameraInfo, back_info_topic, qos_profile=qos_profile_sensor_data
+        self._back_camera_info_sub = message_filters.Subscriber(
+            self, CameraInfo, back_camera_info_topic, qos_profile=qos_profile_sensor_data
         )
 
         self._time_sync = message_filters.ApproximateTimeSynchronizer(
             [
                 self._front_image_sub,
                 self._back_image_sub,
-                self._front_info_sub,
-                self._back_info_sub,
+                self._front_camera_info_sub,
+                self._back_camera_info_sub,
             ],
             queue_size=10,
             slop=sync_slop_sec,
